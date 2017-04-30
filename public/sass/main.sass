@@ -117,3 +117,55 @@ a
 		border: 1px solid #FFFFFF
 		padding: 4px
 		animation: borderColor 5s $easeE infinite
+
+
+.wrapBar
+	padding: 15px
+	strong
+		float: right
+	.avatar
+		max-width: 100%
+		margin: 0 auto
+
+.todo-item
+	position: relative
+	margin: 10px 0
+	padding-left: 30px
+	padding-right: 56px
+	&.todo-complate
+		label
+			text-decoration: line-through
+		&:before
+			content: ''
+			@include positionA(5px, auto, auto, -2px)
+			width: 25px
+			height: 25px
+			background: url("../img/check.png") no-repeat center
+			background-size: cover
+	&:before
+		content: ''
+		@include positionA(5px, auto, auto, -2px)
+		width: 25px
+		height: 25px
+		background: url("../img/box.png") no-repeat center
+		background-size: cover
+	.delete-todo
+		@include positionA(2px, 2px, auto, auto)
+		border: none
+		width: 25px
+		height: 25px
+		background: url("../img/trash.png") no-repeat center
+		background-size: cover
+		cursor: pointer
+		&:hover
+			opacity: 0.5
+	.view-todo
+		@include positionA(2px, 29px, auto, auto)
+		border: none
+		width: 25px
+		height: 25px
+		background: url("../img/search.png") no-repeat center
+		background-size: cover
+		cursor: pointer
+		&:hover
+			opacity: 0.5

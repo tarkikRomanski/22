@@ -9,11 +9,10 @@ Route::get('/', function (){
 });
 
 Route::group(['middleware'=>'auth'], function() {
-    Route::get('/home', ['use' => 'HomeController@index', 'as' => 'home']);
+    Route::get('/home', ['uses' => 'HomeController@index', 'as' => 'home']);
     Route::get('/welcome', function () {
         return view('welcome');
     });
-    Route::get('/home', 'HomeController@index');
 
 
 });
