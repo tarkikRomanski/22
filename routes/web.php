@@ -4,6 +4,10 @@
 
 Auth::routes();
 
+Route::get('/', function (){
+   return redirect('/home');
+});
+
 Route::group(['middleware'=>'auth'], function() {
     Route::get('/home', ['use' => 'HomeController@index', 'as' => 'home']);
     Route::get('/welcome', function () {
@@ -11,9 +15,11 @@ Route::group(['middleware'=>'auth'], function() {
     });
     Route::get('/home', 'HomeController@index');
 
-    Route::group(['prefix'=>'api'], function() {
 
-        Route::match(['post'], '/reg', ['uses'=>'\Api\UserController@reg', 'as'=>'api.reg']);
+});
 
-    });
+Route::group(['prefix'=>'api'], function() {
+
+    Route::match(['post'], '/reg', ['uses'=>'\Api\UserController@reg', 'as'=>'api.reg']);
+
 });

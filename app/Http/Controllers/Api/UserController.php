@@ -11,12 +11,14 @@ class UserController extends Controller
     //
     public function reg(Request $request)
     {
-        $input = $request->all();
         if($request->isMethod('post')){
+            $input = $request->all();
             User::create([
                 'name'=>$input->name,
                 'email'=>$input->email,
                 'password'=>bcrypt($input->password),
+                'sex'=>$input->sex=='male'?false:true,
+                'image'=>$input->character
             ]);
 
             return redirect('/welcome');

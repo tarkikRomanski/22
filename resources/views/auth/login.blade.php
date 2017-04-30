@@ -4,25 +4,35 @@
     <i class="i voice" id="voice"></i>
     <div class="container">
         <div class="row">
-            <form id="loginForm" class="authForm col-md-6 offset-md-3">
+            {{ Form::open(['url'=>'/login', 'role'=>'form', 'method'=>'post', 'id'=>'loginFrom', 'class'=>'authForm col-md-6 offset-md-3']) }}
                 <div class="authForm_image_block">
                     <img src="/img/giphy10.gif" alt="Hello" class="authForm_image">
                 </div>
                 <h2>Login</h2>
-                <div class="form-group">
-                    <label for="userName">U name</label>
-                    <input type="text" id="userName" required="required" name="userName" class="form-control">
+                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                    <label for="email">U mail</label>
+                    <input type="text" id="email" required="required" name="email" class="form-control">
+                    @if ($errors->has('email'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('email') }}</strong>
+                        </span>
+                    @endif
                 </div>
 
-                <div class="form-group">
-                    <label for="userPassword">U Pass</label>
-                    <input type="password" id="userPassword" required="required" class="form-control" name="userPassword">
+                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                    <label for="password">U Pass</label>
+                    <input type="password" id="password" required="required" class="form-control" name="password">
+                    @if ($errors->has('password'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                    @endif
                 </div>
 
                 <button class="btn btn-block btn-main">Login</button>
 
                 <a href="{{ url('/register') }}">U don`t have an account?</a>
-            </form>
+            {{ Form::close() }}
         </div>
     </div>
 

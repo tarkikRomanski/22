@@ -1,7 +1,3 @@
-@font-face 
-	font-family: "Pixel"
-	src: url("../fonts/ds_pixel_cyr.ttf")  format('truetype')
-
 @import _variable
 @import _mixin
 @import _animations
@@ -47,6 +43,8 @@ a
 	&:hover
 		text-decoration: none
 		animation: textColor 5s $easeE infinite
+	&:active, &:focus
+		text-decoration: none
 
 .logo
 	font-size: 1.8em
@@ -108,3 +106,14 @@ a
 	img
 		max-width: 100%
 		margin-bottom: 15px
+
+.character
+	display: none
+	&+label
+		padding: 5px
+		margin: 20px
+		cursor: pointer
+	&:checked+label
+		border: 1px solid #FFFFFF
+		padding: 4px
+		animation: borderColor 5s $easeE infinite

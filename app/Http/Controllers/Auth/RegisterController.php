@@ -66,6 +66,8 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'sex'=>$data['sex']=='male'?false:true,
+            'image'=>$data['character']
         ]);
     }
 }

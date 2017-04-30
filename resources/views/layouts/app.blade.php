@@ -27,6 +27,19 @@
     <div class="container">
         <div class="row">
             <p class="col-auto logo">TwentyTwo</p>
+            @if (!Auth::guest())
+                <div class="float-right">
+                    <a href="{{ url('/logout') }}"
+                       onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+
+                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 </header>
@@ -43,6 +56,6 @@
 
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
-<script src="/js/main.min.js?{{ random_int(0, 100) }}"></script>
+<script src="/js/main.js?{{ random_int(0, 100) }}"></script>
 </body>
 </html>
