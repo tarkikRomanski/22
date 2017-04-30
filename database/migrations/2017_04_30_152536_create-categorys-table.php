@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUsersTable extends Migration
+class CreateCategorysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class UpdateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-            $table->boolean('sex')->default(false);
-            $table->string('image')->default('m1');
+        Schema::create('categorys', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 20);
+            $table->string('color', 7)->default('#ffffff');;
         });
     }
 
@@ -27,8 +27,6 @@ class UpdateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('categorys');
     }
 }
