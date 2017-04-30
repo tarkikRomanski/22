@@ -1,0 +1,14 @@
+button, input, optgroup, select, textarea
+	font-family: $mainFont
+	&:active, &:focus
+		outline: none
+
+.btn
+	cursor: pointer
+	&-main
+		font-size: 0.9em
+		background: rgba(255, 255, 255, 0.2)
+		border: solid 1px rgba(255, 255, 255, 0.2)
+		&:hover
+			background: rgba(255, 255, 255, 0.5)
+			animation: borderColor 5s $easeE infinite, textColor 5s $easeE infinite

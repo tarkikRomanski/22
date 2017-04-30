@@ -1,0 +1,110 @@
+@font-face 
+	font-family: "Pixel"
+	src: url("../fonts/ds_pixel_cyr.ttf")  format('truetype')
+
+@import _variable
+@import _mixin
+@import _animations
+@import _bootstrap
+
+body
+	font-family: $mainFont
+	background: linear-gradient(270deg, #e91e63, #9c27b0, #673ab7, #3f51b5, #2196f3, #00bcd4, #009688, #4caf50, #cddc39, #ffc107, #ff5722)
+	background-size: 2200% 2200%
+	animation: backgroundGradient 10s $easeOutCirc infinite
+	font-size: 1.5em
+	color: #292b2c
+
+footer
+	background-color: #ffffff
+	padding: 20px
+	margin-top: 3px
+
+h1, h2
+	text-align: center
+	position: relative
+	&:before
+		@include positionA(0, 20px, auto, 20px)
+		@include gradientLine
+	&:after
+		@include positionA(auto, 20px, 0, 20px)
+		@include gradientLine
+
+h3, h4
+	text-align: center
+	position: relative
+	&:after
+		@include positionA(auto, 20px, 0, 20px)
+		@include gradientLine
+
+a
+	color: #292b2c
+	text-decoration: none
+	position: relative
+	&:after
+		@include positionA(auto, 20px, 0, 20px)
+		@include gradientLine
+	&:hover
+		text-decoration: none
+		animation: textColor 5s $easeE infinite
+
+.logo
+	font-size: 1.8em
+	color: #fff
+
+.authForm
+	background: rgba(255, 255, 255, 0.4)
+	height: 100%
+	padding: 20px
+	padding-bottom: 40px
+	margin-bottom: 10px
+	&_image_block
+		text-align: center
+	&_image
+		margin-top: 10px
+		margin-bottom: 20px
+		max-width: 100%
+	.form-control
+		font-size: 1.2em
+		&:focus
+			animation: textColor 5s $easeE infinite
+
+.i
+	border: none
+	cursor: pointer
+	position: absolute
+	top: 10px
+	right: 20px
+	display: block
+	&:hover
+		opacity: 0.5
+
+.voice
+	width: 50px
+	height: 50px
+	background: url("../img/voice.svg") no-repeat center
+	background-size: cover
+
+.unvoice
+	width: 50px
+	height: 50px
+	background: url("../img/unvoice.svg") no-repeat center
+	background-size: cover
+
+.emoji
+	display: inline-block
+	width: 20px
+	height: 20px
+	background: url("../img/emoji.png") no-repeat center
+	background-size: cover
+
+.wrapContent
+	height: auto
+	background: #fff
+
+.welcomeBlock
+	text-align: center
+	padding-bottom: 40px
+	img
+		max-width: 100%
+		margin-bottom: 15px

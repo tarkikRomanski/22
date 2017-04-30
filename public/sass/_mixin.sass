@@ -1,0 +1,30 @@
+@mixin positionA($t, $r, $b, $l)
+	position: absolute 
+	top: $t
+	bottom: $b
+	left: $l
+	right: $r
+
+@mixin mediaQ($media) 
+	@if $media == xs 
+		@media only screen and (max-width: $small - 1) 
+			@content
+	@else if $media == sm
+		@media only screen and (max-width: $medium - 1) 
+			@content
+	@else if $media == md
+		@media only screen and (max-width: $large - 1) 
+			@content
+	@else if $media == lg 
+		@media only screen and (min-width: $large)
+			@content
+	@else if $media == xl 
+		@media only screen and (max-width: $xlarge)
+			@content
+
+@mixin gradientLine
+	content: ''
+	height: 1px
+	background: linear-gradient(270deg, #e91e63, #9c27b0, #673ab7, #3f51b5, #2196f3, #00bcd4, #009688, #4caf50, #cddc39, #ffc107, #ff5722)
+	background-size: 2200% 2200%
+	animation: backgroundGradient 30s ease infinite
