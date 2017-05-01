@@ -19,31 +19,37 @@ $(document).ready(function() {
 
             if ($('#password').val().length < 6) {
 
-                var passwordBlock = document.getElementById('password-block');
+                passwordBlock = document.getElementById('password-block');
                 passwordBlock.className += " has-error";
-                var errorBlock = document.createElement('span');
+                errorBlock = document.createElement('span');
                 errorBlock.className = "help-block";
-                var errorTextBlock = document.createElement('strong');
-                var errorText = document.createTextNode('The password must be at least 6 characters.');
+                errorTextBlock = document.createElement('strong');
+                errorText = document.createTextNode('The password must be at least 6 characters.');
                 errorTextBlock.appendChild(errorText);
                 errorBlock.appendChild(errorTextBlock);
                 passwordBlock.appendChild(errorBlock);
                 $('html, body').animate({
                     scrollTop: $("#password-block").offset().top
+                }, 500);
+                setTimeout(function () {
+                    passwordBlock.removeChild(errorBlock);
                 }, 2000);
                 e.preventDefault();
             } else if ($('#password').val() != $('#password-confirm').val()) {
-                var passwordBlock = document.getElementById('password-block');
+                passwordBlock = document.getElementById('password-block');
                 passwordBlock.className += " has-error";
-                var errorBlock = document.createElement('span');
+                errorBlock = document.createElement('span');
                 errorBlock.className = "help-block";
-                var errorTextBlock = document.createElement('strong');
-                var errorText = document.createTextNode('The password confirmation does not match.');
+                errorTextBlock = document.createElement('strong');
+                errorText = document.createTextNode('The password confirmation does not match.');
                 errorTextBlock.appendChild(errorText);
                 errorBlock.appendChild(errorTextBlock);
                 passwordBlock.appendChild(errorBlock);
                 $('html, body').animate({
                     scrollTop: $("#password-block").offset().top
+                }, 500);
+                setTimeout(function () {
+                    passwordBlock.removeChild(errorBlock);
                 }, 2000);
                 e.preventDefault();
             }
@@ -205,9 +211,17 @@ $(document).ready(function() {
         });
     }
 
-    if(document.getElementById('newTodoButton') !== null) {
-        $('#newTodoButton').click(function () {
-            var modalHeader = ' \
+    if(document.getElementById('todoListBlock') !== null){
+        $.ajax({
+            url: '/todo/list',
+            method: 'get',
+            success: function (data) {
+                $('#todoListBlock').html(data);
+                if(document.getElementById('newTodoButton') !== null) {
+                    $('#newTodoButton').click(function () {
+                        token = $('meta[name="csrf-token"]').attr('content');
+
+                        var modalHeader = ' \
                 <div class="modal-header"> \
                     <h5 class="modal-title">Adding new 2Do</h5> \
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
@@ -216,78 +230,154 @@ $(document).ready(function() {
                 </div> \
            ';
 
-            var modalBody = ' \
+                        var modalBody = ' \
                 <div class="modal-body"> \
-                <form> \
+                <form id="todoAddForm" action="/todo/add" method="post" role="form"> \
+                <input name="_token" type="hidden" value="'+token+'" >\
                 <div class="form-group"> \
-                <label for="recipient-name" class="form-control-label">Recipient:</label> \
-            <input type="text" class="form-control" id="recipient-name"> \
+                    <label for="title" class="form-control-label">Title:</label> \
+                    <input type="text" class="form-control" id="title" name="title"> \
                 </div> \
                 <div class="form-group"> \
-                <label for="message-text" class="form-control-label">Message:</label> \
-            <textarea class="form-control" id="message-text"></textarea> \
+                    <label for="description" class="form-control-label">Description:</label> \
+                    <textarea class="form-control" id="description" name="description"></textarea> \
                 </div> \
-                </form> \
-                </div> \
+               <fieldset class="form-group"> \
+                <legend>When execute?</legend> \
+            <div class="form-check"> \
+                <label class="form-check-label"> \
+                <input type="radio" class="form-check-input" name="when" id="today" value="today" checked> \                \
+                Today \
+            </label> \
+            </div> \
+            <div class="form-check"> \
+                <label class="form-check-label"> \
+                <input type="radio" class="form-check-input" name="when" id="tomorrow" value="tomorrow"> \
+                Tomorrow \
+            </label> \
+            </div> \
+            </fieldset> \
             ';
 
-            var modalFooter = ' \
+                        var modalFooter = ' \
             <div class="modal-footer"> \
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
-                <button type="button" class="btn btn-primary">Send message</button> \
+                <button class="btn btn-main">Add new 2Do</button> \
             </div> \
             ';
 
-            var modalContent = modalHeader + modalBody + modalFooter;
+                        var modalContent = modalHeader + modalBody + modalFooter;
 
-            $('#modal').find('.modal-content')
-                .html('')
-                .append(modalContent);
-            $('#modal').modal('show');
-        });
-    }
+                        $('#modal').find('.modal-content')
+                            .html('')
+                            .append(modalContent)
+                            .find('#todoAddForm')
+                            .submit(function(e){
+                                if($('#title').val() == ''){
+                                    formBlock = document.getElementById('title').parentNode;
+                                    formBlock.className += " has-error";
+                                    errorBlock = document.createElement('span');
+                                    errorBlock.className = "help-block";
+                                    errorTextBlock = document.createElement('strong');
+                                    errorText = document.createTextNode('Fiald title empty');
+                                    errorTextBlock.appendChild(errorText);
+                                    errorBlock.appendChild(errorTextBlock);
+                                    formBlock.appendChild(errorBlock);
 
-    if(document.getElementsByClassName('view-todo').length > 0) {
-        $('.view-todo').click(function () {
-            var targetId = $(this).attr('data-target');
+                                    setTimeout(function () {
+                                        formBlock.removeChild(errorBlock);
+                                    }, 2000);
 
-            var modalHeader = ' \
-                <div class="modal-header"> \
-                    <h5 class="modal-title">' + targetId + '</h5> \
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
-                        <span aria-hidden="true">&times;</span> \
-                    </button> \
-                </div> \
-           ';
+                                    e.preventDefault();
+                                }
 
-            var modalBody = ' \
-                <div class="modal-body"> \
-                <form> \
-                <div class="form-group"> \
-                <label for="recipient-name" class="form-control-label">Recipient:</label> \
-            <input type="text" class="form-control" id="recipient-name"> \
-                </div> \
-                <div class="form-group"> \
-                <label for="message-text" class="form-control-label">Message:</label> \
-            <textarea class="form-control" id="message-text"></textarea> \
-                </div> \
-                </form> \
-                </div> \
-            ';
+                                else if($('#title').val().length > 60){
+                                    formBlock = document.getElementById('title').parentNode;
+                                    formBlock.className += " has-error";
+                                    errorBlock = document.createElement('span');
+                                    errorBlock.className = "help-block";
+                                    errorTextBlock = document.createElement('strong');
+                                    errorText = document.createTextNode('Value should not exceed 60 characters!');
+                                    errorTextBlock.appendChild(errorText);
+                                    errorBlock.appendChild(errorTextBlock);
+                                    formBlock.appendChild(errorBlock);
 
-            var modalFooter = ' \
-            <div class="modal-footer"> \
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
-                <button type="button" class="btn btn-primary">Send message</button> \
-            </div> \
-            ';
+                                    setTimeout(function () {
+                                        formBlock.removeChild(errorBlock);
+                                    }, 2000);
 
-            var modalContent = modalHeader + modalBody + modalFooter;
+                                    e.preventDefault();
+                                }
+                            });
+                        $('#modal').modal('show');
+                    });
+                }
+                if(document.getElementsByClassName('view-todo').length > 0) {
+                    $('.view-todo').click(function () {
+                        var targetId = $(this).attr('data-target');
 
-            $('#modal').find('.modal-content')
-                .html('')
-                .append(modalContent);
-            $('#modal').modal('show');
-        });
+                        var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                                    var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                                    var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                        var modalContent = modalHeader + modalBody + modalFooter;
+
+                        $('#modal').find('.modal-content')
+                            .html('')
+                            .append(modalContent);
+                        $('#modal').modal('show');
+
+                        $.ajax({
+                            url: '/todo/'+targetId,
+                            method: 'get',
+                            success: function (data) {
+                                $('#modal').find('.modal-content')
+                                    .html('')
+                                    .append(data);
+                            }
+                        })
+                    });
+                }
+
+                $('#todoListBlock').find('.checkbox').change(function(e){
+                    targetId = $(this).attr('data-target');
+                    console.log(targetId);
+                   $.ajax({
+                       url: '/todo/'+targetId+'/status',
+                       method: 'get'
+                   });
+                });
+
+                $('#todoListBlock').find('.delete-todo').click(function(e){
+                    targetId = $(this).attr('data-target');
+                    console.log(targetId);
+                    $.ajax({
+                        url: '/todo/'+targetId+'/delete',
+                        method: 'get',
+                        success: function () {
+                            parent = document.getElementById('todo'+targetId).parentNode;
+                            parent.parentNode.removeChild(parent);
+                        }
+                    });
+                });
+            }
+        })
     }
 });

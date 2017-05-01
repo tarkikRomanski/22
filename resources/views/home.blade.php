@@ -12,23 +12,7 @@
                         <p>Sex: <strong>{{ Auth::user()->sex==0?'Male':'Female' }}</strong></p>
                     </div>
                     <div class="col-12">
-                        <h2>2day 2Do list:</h2>
-                        <button class="btn btn-block btn-main" id="newTodoButton">Add new 2Do</button>
-                        <div class="todo-item">
-                            <label>Todo title</label>
-                            <button class="view-todo" data-toggle="modal" data-target="1"></button>
-                            <button class="delete-todo" data-target="1"></button>
-                        </div>
-                        <div class="todo-item todo-complate">
-                            <label>Todo title</label>
-                            <button class="view-todo" data-target="3"></button>
-                            <button class="delete-todo" data-target="3"></button>
-                        </div>
-                        <div class="todo-item todo-complate">
-                            <label>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam amet blanditiis debitis dignissimos.</label>
-                            <button class="view-todo" data-target="3"></button>
-                            <button class="delete-todo" data-target="3"></button>
-                        </div>
+                        <div id="todoListBlock"><div class="loader">Loading...</div></div>
                     </div>
                 </div>
             </div>
