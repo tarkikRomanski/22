@@ -9,7 +9,11 @@
                     <div class="col-12">
                         <h3>{{ Auth::user()->name }}</h3>
                         <p>Email: <strong>{{ Auth::user()->email }}</strong></p>
-                        <p>Sex: <strong>{{ Auth::user()->sex==0?'Male':'Female' }}</strong></p>
+                        <p>
+                            Sex:
+                            <strong>
+                                {{ Html::image('/img/'.(Auth::user()->sex==0?'male':'female').'.png') }}
+                            </strong></p>
                     </div>
                     <div class="col-12">
                         <div id="todoListBlock"><div class="loader">Loading...</div></div>
