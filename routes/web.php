@@ -20,6 +20,8 @@ Route::group(['middleware'=>'auth'], function() {
     Route::match(['get'], '/todo/{id?}/status', ['uses'=>'TodoController@status', 'as'=>'todo.status']);
     Route::match(['get'], '/todo/{id?}/delete', ['uses'=>'TodoController@delete', 'as'=>'todo.delete']);
 
+    Route::get('/u/{name?}', ['uses' => 'PersonalController@personalPage', 'as' => 'personalPage']);
+
 });
 
 Route::group(['prefix'=>'api'], function() {
