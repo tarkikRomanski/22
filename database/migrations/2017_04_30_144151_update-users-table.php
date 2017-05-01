@@ -16,7 +16,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->boolean('sex')->default(false);
-            $table->string('image')->default('m1');
+            $table->string('image');
         });
     }
 

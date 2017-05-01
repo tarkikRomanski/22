@@ -57,7 +57,7 @@ $(document).ready(function() {
         });
     }
 
-    if(document.getElementsByName('sex') > 0) {
+    if(document.getElementById('characters') !== null) {
         function showCharacterBlock(sex) {
             var charactersBlock = document.getElementById('characters');
 

@@ -1,6 +1,8 @@
 <h2>2day 2Do list:</h2>
 <button class="btn btn-block btn-main" id="newTodoButton">Add new 2Do</button>
-
+@if(isset($messeage))
+    <h3>{!!  $messeage !!}</h3>
+@endif
 @foreach($todos as $todo)
     <div class="todo-item
                 {{

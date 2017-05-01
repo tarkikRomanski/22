@@ -32,8 +32,14 @@ class TodoController extends Controller
     public function setList(){
         $date = Carbon::parse('today');
 
-        $todos = Todo::todayList($date)->get();
-        echo view('site.todo.list', ['todos'=>$todos]);
+        if(!Todo::todayList($date)->exists()) {
+            $data = [
+                'messeage' => 'U 2Do list EMPTY, create first task!<span class="emoji"></span>'
+            ];
+        }
+            $data['todos'] = Todo::todayList($date)->get();
+
+            echo view('site.todo.list', $data);
     }
 
     public function setFromId($id = null){

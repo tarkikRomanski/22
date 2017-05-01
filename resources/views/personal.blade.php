@@ -5,7 +5,7 @@
         <div class="wrapContent row">
             <div class="col-md-4 col-sm-3">
                 <div class="row wrapBar">
-                    {{ Html::image('/img/character_'. $user->image . '.png', $user->name, ['class'=>'avatar center-block']) }}
+                    {{ Html::image('/img/'. $user->image . '.png', $user->name, ['class'=>'avatar center-block']) }}
                     <div class="col-12">
                         <h3>{{ $user->name }}</h3>
                         <p>Email: <strong>{{ $user->email }}</strong></p>
