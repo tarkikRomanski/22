@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Todosteam;
+use App\Todoteamcomment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
@@ -47,7 +48,8 @@ class TodosteamController extends Controller
             if(Todosteam::where('id', $id)->exists()) {
 
                 $todo = Todosteam::findById($id);
-                echo view('site.team.todo.set', ['todo' => $todo]);
+                $comments = Todoteamcomment::getCommentForTeam($id)->get();
+                echo view('site.team.todo.set', ['todo' => $todo, 'comments'=>$comments]);
 
             } else {
                 echo '<h2>Data does not exist</h2>';

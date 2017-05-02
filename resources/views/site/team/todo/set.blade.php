@@ -32,6 +32,32 @@
             Created date: {{\Carbon\Carbon::createFromDate($todo->date_year, $todo->date_month, $todo->date_day)->toDateString()}}
         </small>
     </p>
+
+    <h2>Comments:</h2>
+
+    <div id="commentsBlock">
+        @foreach($comments as $item)
+            <div class="commentItem">
+                <h4>{{ $item->owner_name }}</h4>
+                <p>{{ $item->text }}</p>
+                <strong>
+                    {{ \Carbon\Carbon::create($item->year, $item->month, $item->day)->toDateString() }}
+                </strong>
+            </div>
+        @endforeach
+    </div>
+
+    {{ Form::open(['route'=>'comment.add', 'method'=>'post', 'id'=>'newCommentForm']) }}
+    {{ Form::hidden('target', $todo->id) }}
+    {{ Form::hidden('type', 'todoteam') }}
+
+        <div class="form-group">
+            <label for="text">Text:</label>
+            <textarea name="text" id="text" class="form-control" rows="10"></textarea>
+            <button class="btn btn-main">Send comment</button>
+        </div>
+
+    {{ Form::close() }}
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

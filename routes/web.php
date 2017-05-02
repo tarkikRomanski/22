@@ -43,6 +43,10 @@ Route::group(['middleware'=>'auth'], function() {
 
     });
 
+    Route::group(['prefix'=>'comment'], function() {
+        Route::post('/add', ['uses'=>'CommentController@add', 'as'=>'comment.add']);
+    });
+
     Route::get('/u/{name?}', ['uses' => 'PersonalController@personalPage', 'as' => 'personalPage']);
     Route::get('/t/{id?}', ['uses' => 'TeamsController@teamPage', 'as' => 'teamPage']);
 
