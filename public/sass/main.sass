@@ -11,6 +11,9 @@ body
 	font-size: 1.5em
 	color: #292b2c
 
+img
+	max-width: 100%
+
 footer
 	background-color: #ffffff
 	padding: 20px
@@ -61,7 +64,6 @@ a
 	&_image
 		margin-top: 10px
 		margin-bottom: 20px
-		max-width: 100%
 	.form-control
 		font-size: 1.2em
 		&:focus
@@ -104,7 +106,6 @@ a
 	text-align: center
 	padding-bottom: 40px
 	img
-		max-width: 100%
 		margin-bottom: 15px
 
 .character
@@ -128,7 +129,6 @@ a
 			max-width: 36px
 			opacity: 0.8
 	.avatar
-		max-width: 100%
 		margin: 0 auto
 
 .todo-item
@@ -190,3 +190,71 @@ a
 		text-align: center
 		width: 100%
 		font-size: 20em
+
+.mainBlock
+	padding: 0
+
+.imgNav
+	background: #eeeeee
+	padding: 20px
+	.navItem
+		text-align: center
+		cursor: pointer
+		opacity: 0.6
+		&:hover
+			opacity: 1
+		&.activeItem
+			animation: textColor 5s $easeE infinite
+			opacity: 1
+
+#mainContentBlock
+	padding: 10px
+
+.teamItem
+	padding: 15px
+	position: relative
+	.color
+		width: 50px
+		height: 50px
+		border-radius: 25px
+		display: inline-block
+	h4
+		vertical-align: top
+		display: inline-block
+	.go
+		@include positionA(25px, 20px, auto, auto)
+		width: 35px
+		height: 25px
+		background: url("../img/next.png") no-repeat center
+		background-size: cover
+		text-decoration: none
+		&:hover
+			opacity: 0.6
+.confirmInvite
+	@include positionA(25px, 60px, auto, auto)
+	width: 25px
+	height: 25px
+	background: url("../img/check.png") no-repeat center
+	background-size: cover
+
+.wrapTeam
+	.teamName
+		animation: textColorBtoW 5s $easeE infinite
+		font-size: 1.7em
+	.wrapTeamBar
+		padding: 20px
+
+.userItem
+	margin-bottom: 20px
+	.userCharacter
+		width: 100px
+		height: 100px
+		background-size: cover
+		background-position: 0 0
+		background-repeat: no-repeat
+		display: inline-block
+	.userData
+		vertical-align: top
+		margin-left: 20px
+		display: inline-block
+		width: auto

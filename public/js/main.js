@@ -380,4 +380,214 @@ $(document).ready(function() {
             }
         })
     }
+
+    if(document.getElementById('userTeamBlock') !== null){
+        $.ajax({
+            url: '/team/get',
+            method: 'get',
+            success: function (data) {
+                $('#createdTeamsBlock').html(data);
+                $('#openCreateTeamButton').click(function () {
+                    token = $('meta[name="csrf-token"]').attr('content');
+
+                    var modalHeader = ' \
+                <div class="modal-header"> \
+                    <h5 class="modal-title">Create new team</h5> \
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                        <span aria-hidden="true">&times;</span> \
+                    </button> \
+                </div> \
+           ';
+
+                    var modalBody = ' \
+                <form id="teamAddForm" action="/team/add" method="post" role="form"> \
+                <div class="modal-body"> \
+                <div style="text-align: center"> \
+                <img src="img/giphy9.gif"> \
+                </div> \
+                <input name="_token" type="hidden" value="'+token+'" >\
+                <div class="form-group"> \
+                    <label for="name" class="form-control-label">Name:</label> \
+                    <input type="text" class="form-control" id="name" name="name"> \
+                </div> \
+                <div class="form-group"> \
+                    <label for="description" class="form-control-label">Description:</label> \
+                    <textarea class="form-control" id="description" name="description"></textarea> \
+                </div> \
+                <div class="form-group"> \
+                    <label for="color" class="form-control-label">Color:</label> \
+                    <input type="color" class="form-control" id="color" name="color"> \
+                </div> \
+                \
+            ';
+
+                    var modalFooter = ' \
+            <div class="modal-footer"> \
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                <button class="btn btn-main">Create new team</button> \
+            </div> \
+            </form> \
+            ';
+
+                    var modalContent = modalHeader + modalBody + modalFooter;
+
+                    $('#modal').find('.modal-content')
+                        .html('')
+                        .append(modalContent)
+                        .find('#teamAddForm')
+                        .submit(function(e){
+                            if($('#name').val() == ''){
+                                formBlock = document.getElementById('name').parentNode;
+                                formBlock.className += " has-error";
+                                errorBlock = document.createElement('span');
+                                errorBlock.className = "help-block";
+                                errorTextBlock = document.createElement('strong');
+                                errorText = document.createTextNode('Fiald name empty');
+                                errorTextBlock.appendChild(errorText);
+                                errorBlock.appendChild(errorTextBlock);
+                                formBlock.appendChild(errorBlock);
+
+                                setTimeout(function () {
+                                    formBlock.removeChild(errorBlock);
+                                }, 2000);
+
+                                e.preventDefault();
+                            }
+
+                            else if($('#name').val().length > 10){
+                                formBlock = document.getElementById('name').parentNode;
+                                formBlock.className += " has-error";
+                                errorBlock = document.createElement('span');
+                                errorBlock.className = "help-block";
+                                errorTextBlock = document.createElement('strong');
+                                errorText = document.createTextNode('Value should not exceed 10 characters!');
+                                errorTextBlock.appendChild(errorText);
+                                errorBlock.appendChild(errorTextBlock);
+                                formBlock.appendChild(errorBlock);
+
+                                setTimeout(function () {
+                                    formBlock.removeChild(errorBlock);
+                                }, 2000);
+
+                                e.preventDefault();
+                            }
+                        });
+                    $('#modal').modal('show');
+                });
+            }
+        });
+        $.ajax({
+            url: '/team/list',
+            method: 'get',
+            success: function (data) {
+                $('#userTeamBlock').html(data);
+            }
+        });
+        $.ajax({
+            url: '/team/invite',
+            method: 'get',
+            success: function (data) {
+                if(data != false){
+                    $('#inviteBlock').html('<button id="seeAllInvite" class="btn btn-default">U have <span class="badge badge-default">'+data+'</span> invite</button>');
+
+                    $('#seeAllInvite').click(function () {
+                        $.ajax({
+                            url: '/team/get/invite',
+                            method: 'get',
+                            success: function (data) {
+                                $('#inviteBlock').html(data);
+                            }
+                        })
+                    })
+                }
+            }
+        });
+    }
+
+    if(document.getElementById('sendIbviteButton') !== null){
+        $('#sendIbviteButton').click(function () {
+            token = $('meta[name="csrf-token"]').attr('content');
+
+            var modalHeader = ' \
+                <div class="modal-header"> \
+                    <h5 class="modal-title">Sending invite</h5> \
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                        <span aria-hidden="true">&times;</span> \
+                    </button> \
+                </div> \
+           ';
+
+            var modalBody = ' \
+                <form id="sendInviteForm" role="form"> \
+                <div class="modal-body"> \
+                <input name="_token" type="hidden" value="'+token+'" >\
+                <div class="form-group"> \
+                    <label for="name" class="form-control-label">User name or email:</label> \
+                    <input type="text" class="form-control" id="name" name="name"> \
+                </div> \
+            ';
+
+            var modalFooter = ' \
+            <div class="modal-footer"> \
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                <button class="btn btn-main">Send invite</button> \
+            </div> \
+            </form> \
+            ';
+
+            var modalContent = modalHeader + modalBody + modalFooter;
+
+            $('#modal').find('.modal-content')
+                .html('')
+                .append(modalContent)
+                .find('#sendInviteForm')
+                .submit(function(e){
+
+                    e.preventDefault();
+
+                    if($('#title').val() == ''){
+                        formBlock = document.getElementById('name').parentNode;
+                        formBlock.className += " has-error";
+                        errorBlock = document.createElement('span');
+                        errorBlock.className = "help-block";
+                        errorTextBlock = document.createElement('strong');
+                        errorText = document.createTextNode('Write user name or email');
+                        errorTextBlock.appendChild(errorText);
+                        errorBlock.appendChild(errorTextBlock);
+                        formBlock.appendChild(errorBlock);
+
+                        setTimeout(function () {
+                            formBlock.removeChild(errorBlock);
+                        }, 2000);
+
+                    } else {
+                        $.ajax({
+                            url: '/team/invite/'+$('#name').val(),
+                            method: 'get',
+                            success: function (data) {
+                                if (data == false){
+                                    formBlock = document.getElementById('name').parentNode;
+                                    formBlock.className += " has-error";
+                                    errorBlock = document.createElement('span');
+                                    errorBlock.className = "help-block";
+                                    errorTextBlock = document.createElement('strong');
+                                    errorText = document.createTextNode('User does not exist');
+                                    errorTextBlock.appendChild(errorText);
+                                    errorBlock.appendChild(errorTextBlock);
+                                    formBlock.appendChild(errorBlock);
+
+                                    setTimeout(function () {
+                                        formBlock.removeChild(errorBlock);
+                                    }, 2000);
+                                } else {
+                                    location.href = location.href;
+                                }
+                            }
+                        });
+                    }
+
+                });
+            $('#modal').modal('show');
+        })
+    }
 });
