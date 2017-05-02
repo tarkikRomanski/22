@@ -53,7 +53,8 @@ class TeamsController extends Controller
 
         $data = [
             'team' => Team::where('id', $id)->first(),
-            'members' => Member::getMembersList($id)
+            'members'=>Member::getMembersList($id),
+            'select' => Member::getOnlyConfirmMembersList($id)
         ];
 
         //dd(Member::getMembersList($id)->toArray());

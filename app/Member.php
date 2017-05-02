@@ -50,4 +50,17 @@ class Member extends Model
                 'members.user_id'
             )->get();
     }
+
+    public static function getOnlyConfirmMembersList($team){
+        return Member::where('team_id', $team)
+            ->where('status', true)
+            ->join('users', 'members.user_id', '=', 'users.id')
+            ->select(
+                'members.status as status',
+                'users.name as name',
+                'users.email as email',
+                'users.image as image',
+                'members.user_id'
+            )->get();
+    }
 }

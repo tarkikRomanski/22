@@ -32,6 +32,15 @@ Route::group(['middleware'=>'auth'], function() {
         Route::get('/invite/{user}', ['uses'=>'TeamsController@sendInvite', 'as'=>'team.invite.send']);
         Route::get('/get/invite', ['uses'=>'TeamsController@getInvite', 'as'=>'team.get.invite']);
         Route::get('/confirm/{id?}', ['uses'=>'TeamsController@confirmInvite', 'as'=>'team.confirm.invite']);
+
+        Route::group(['prefix'=>'todo'], function() {
+            Route::post('/create', ['uses'=>'TodosteamController@add', 'as'=>'team.todo.add']);
+            Route::get('/list/{team}', ['uses'=>'TodosteamController@getList', 'as'=>'team.todo.list']);
+            Route::match(['get'], '/{id?}', ['uses' => 'TodosteamController@setFromId', 'as' => 'team.todo.set']);
+            Route::match(['get'], '/{id?}/status', ['uses' => 'TodosteamController@status', 'as' => 'team.todo.status']);
+            Route::match(['get'], '/{id?}/delete', ['uses' => 'TodosteamController@delete', 'as' => 'team.todo.delete']);
+        });
+
     });
 
     Route::get('/u/{name?}', ['uses' => 'PersonalController@personalPage', 'as' => 'personalPage']);

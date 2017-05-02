@@ -505,6 +505,12 @@ $(document).ready(function() {
     }
 
     if(document.getElementById('sendIbviteButton') !== null){
+            $('#newTodoButton').click(function(){
+            $('html, body').animate({
+                scrollTop: $("#createTeamTodo").offset().top
+            }, 500);
+        });
+
         $('#sendIbviteButton').click(function () {
             token = $('meta[name="csrf-token"]').attr('content');
 
@@ -589,5 +595,122 @@ $(document).ready(function() {
                 });
             $('#modal').modal('show');
         })
+    }
+
+    if(document.getElementById('createTeamTodo') !== null) {
+        $('#createTeamTodo')
+            .submit(function (e) {
+                if ($('#title').val() == '') {
+                    formBlock = document.getElementById('title').parentNode;
+                    formBlock.className += " has-error";
+                    errorBlock = document.createElement('span');
+                    errorBlock.className = "help-block";
+                    errorTextBlock = document.createElement('strong');
+                    errorText = document.createTextNode('Fiald title empty');
+                    errorTextBlock.appendChild(errorText);
+                    errorBlock.appendChild(errorTextBlock);
+                    formBlock.appendChild(errorBlock);
+
+                    setTimeout(function () {
+                        formBlock.removeChild(errorBlock);
+                    }, 2000);
+
+                    e.preventDefault();
+                }
+
+                else if ($('#title').val().length > 60) {
+                    formBlock = document.getElementById('title').parentNode;
+                    formBlock.className += " has-error";
+                    errorBlock = document.createElement('span');
+                    errorBlock.className = "help-block";
+                    errorTextBlock = document.createElement('strong');
+                    errorText = document.createTextNode('Value should not exceed 60 characters!');
+                    errorTextBlock.appendChild(errorText);
+                    errorBlock.appendChild(errorTextBlock);
+                    formBlock.appendChild(errorBlock);
+
+                    setTimeout(function () {
+                        formBlock.removeChild(errorBlock);
+                    }, 2000);
+
+                    e.preventDefault();
+                }
+            });
+    }
+
+    if(document.getElementById('teamTodoListBlock') !== null) {
+        $.ajax({
+            url: '/team/todo/list/'+$('[name="team"]').val(),
+            method: 'get',
+            success: function (data) {
+                $('#teamTodoListBlock').html(data);
+
+                if(document.getElementsByClassName('view-todo').length > 0) {
+                    $('.view-todo').click(function () {
+                        var targetId = $(this).attr('data-target');
+
+                        var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                        var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                        var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                        var modalContent = modalHeader + modalBody + modalFooter;
+
+                        $('#modal').find('.modal-content')
+                            .html('')
+                            .append(modalContent);
+                        $('#modal').modal('show');
+
+                        $.ajax({
+                            url: '/team/todo/'+targetId,
+                            method: 'get',
+                            success: function (data) {
+                                $('#modal').find('.modal-content')
+                                    .html('')
+                                    .append(data);
+                            }
+                        })
+                    });
+                }
+
+                $('#teamTodoListBlock').find('.checkbox').change(function(e){
+                    targetId = $(this).attr('data-target');
+                    console.log(targetId);
+                    $.ajax({
+                        url: '/team/todo/'+targetId+'/status',
+                        method: 'get'
+                    });
+                });
+
+                $('#teamTodoListBlock').find('.delete-todo').click(function(e){
+                    targetId = $(this).attr('data-target');
+                    console.log(targetId);
+                    $.ajax({
+                        url: '/team/todo/'+targetId+'/delete',
+                        method: 'get',
+                        success: function () {
+                            parent = document.getElementById('todo'+targetId).parentNode;
+                            parent.parentNode.removeChild(parent);
+                        }
+                    });
+                });
+            }
+        });
     }
 });

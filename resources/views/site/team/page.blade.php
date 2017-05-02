@@ -10,6 +10,7 @@
                     <button id="newTodoButton" class="btn btn-block btn-main">Add new 2Do</button>
                 </div>
             @endif
+
             <div class="{{Auth::user()->id == $team->id?'col-sm-8':'col-12'}}">
                 <div class="row">
                     <div class="col-12" style="background:{{$team->color}}; height:100px;">
@@ -32,6 +33,30 @@
                                 </div>
                             </a>
                         @endforeach
+
+                        <h2>Team 2Do:</h2>
+                        {{ Form::open(['url'=>'/team/todo/create', 'method'=>'post', 'id'=>'createTeamTodo']) }}
+                            <div class="form-group">
+                                <label for="title" class="form-control-label">Title:</label>
+                                <input type="text" class="form-control" id="title" name="title">
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="form-control-label">Description:</label>
+                                <textarea class="form-control" id="description" name="description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="member" class="form-control-label">Member:</label>
+                                <select name="member" id="member" class="form-control">
+                                    @foreach($select as $k=>$member)
+                                        <option {{$k==0?'selected="selected"':''}} value="{{$member->user_id}}">{{$member->name . ' || ' . $member->email}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{ Form::hidden('team', $team->id) }}
+                        <button class="btn btn-block btn-main">Create 2Do task</button>
+                        {{ Form::close() }}
+                        <div id="teamTodoListBlock"><div class="loader">Loading...</div></div>
                     </div>
                 </div>
             </div>
