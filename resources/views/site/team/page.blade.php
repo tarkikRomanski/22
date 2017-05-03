@@ -16,6 +16,20 @@
                     <div class="col-12" style="background:{{$team->color}}; height:100px;">
                         <p class="teamName">{{ $team->name }}</p>
                     </div>
+                    @if(\App\Member::where('team_id', $team->id)
+                        ->where('user_id', Auth::user()->id)
+                        ->where('status', false)
+                        ->exists())
+                        <a
+                                href="/team/confirm/{{\App\Member::where('team_id', $team->id)
+                                                    ->where('user_id', Auth::user()->id)
+                                                    ->where('status', false)
+                                                    ->first()
+                                                    ->id}}"
+                                class="btn btn-block btn-defaul">
+                            Confirm Invite
+                        </a>
+                    @endif
                     <div class="col-12">
                         <h2>Members: </h2>
                         @foreach($members as $member)
@@ -35,6 +49,10 @@
                         @endforeach
 
                         <h2>Team 2Do:</h2>
+                        @if(\App\Member::where('team_id', $team->id)
+                        ->where('user_id', Auth::user()->id)
+                        ->where('status', true)
+                        ->exists())
                         {{ Form::open(['url'=>'/team/todo/create', 'method'=>'post', 'id'=>'createTeamTodo']) }}
                             <div class="form-group">
                                 <label for="title" class="form-control-label">Title:</label>
@@ -57,6 +75,9 @@
                         <button class="btn btn-block btn-main">Create 2Do task</button>
                         {{ Form::close() }}
                         <div id="teamTodoListBlock"><div class="loader">Loading...</div></div>
+                        @else
+                            <p>U do not have permission to view!</p>
+                        @endif
                     </div>
                 </div>
             </div>

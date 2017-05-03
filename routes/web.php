@@ -49,6 +49,7 @@ Route::group(['middleware'=>'auth'], function() {
 
     Route::get('/u/{name?}', ['uses' => 'PersonalController@personalPage', 'as' => 'personalPage']);
     Route::get('/t/{id?}', ['uses' => 'TeamsController@teamPage', 'as' => 'teamPage']);
+    Route::get('/tstatistic', ['uses' => 'StatisticController@todayStatistic', 'as' => 'teamPage']);
 
 });
 

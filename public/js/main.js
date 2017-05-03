@@ -211,7 +211,23 @@ $(document).ready(function() {
         });
     }
 
+    if(document.getElementById('showDailyStatistic') !== null){
+        $('#showDailyStatistic').click(function(){
+        $.ajax({
+            url: '/tstatistic',
+            method: 'get',
+            success: function (data) {
+                $('#modal').find('.modal-content').html(data);
+                $('#modal').modal('show');
+            }
+        });
+        });
+    }
+
     if(document.getElementById('todoListBlock') !== null){
+
+
+
         $.ajax({
             url: '/todo/list',
             method: 'get',

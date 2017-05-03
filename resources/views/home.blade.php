@@ -8,6 +8,7 @@
                     {{ Html::image('/img/'. Auth::user()->image . '.png', Auth::user()->name, ['class'=>'avatar center-block']) }}
                     <div class="col-12">
                         <h3>{{ Auth::user()->name }}</h3>
+                        <button class="btn btn-block btn-default" id="showDailyStatistic">Show Daily Statistic</button>
                         <p>Email: <strong>{{ Auth::user()->email }}</strong></p>
                         <p>
                             Sex:

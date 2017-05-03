@@ -25,6 +25,23 @@ class Todo extends Model
         return $query->where('owner_id', Auth::user()->id);
     }
 
+    public static function overdayTasks($date){
+        $notDoneLastYear = Todo::getUserTasc()
+            ->where('status', false)
+            ->where('date_year', '<', $date->year);
+        $notDoneLastMonth = Todo::getUserTasc()
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', '<', $date->month);
+        return Todo::getUserTasc()
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', '<', $date->day)
+            ->unionAll($notDoneLastYear)
+            ->unionAll($notDoneLastMonth);
+    }
+
     public static function todayList($date){
         $notDoneLastYear = Todo::getUserTasc()
             ->where('status', false)
