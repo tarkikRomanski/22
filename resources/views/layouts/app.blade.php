@@ -12,7 +12,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css?{{ random_int(0, 100) }}">
     <link rel="stylesheet" href="/css/loader.css">
     <!-- Scripts -->
     <script>

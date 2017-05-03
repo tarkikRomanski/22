@@ -23,25 +23,22 @@
             </div>
             <div class="col-md-8 mainBlock">
                 <main>
-                    <nav class="imgNav">
+                    <nav id="imgNav" class="imgNav">
                         <div class="row">
-                            <div class="col-2 navItem activeItem">
+                            <div data-target="team" class="col-2 navItem">
                                 {{ Html::image('img/member.png', 'Teams') }}
                                 <strong>Teams</strong>
+                            </div>
+
+                            <div data-target="event" class="col-2 navItem">
+                                {{ Html::image('img/file.png', 'Events') }}
+                                <strong>Events</strong>
                             </div>
                         </div>
                     </nav>
 
                     <div id="mainContentBlock">
-                        <h2>U created teams</h2>
-                        <div id="createdTeamsBlock" class="mb-3">
-                            <div class="loader">Loading...</div>
-                        </div>
-                        <h2>U team</h2>
-                        <div id="inviteBlock"></div>
-                        <div id="userTeamBlock">
-                            <div class="loader">Loading...</div>
-                        </div>
+                        <div class="loader">Loading...</div>
                     </div>
                 </main>
             </div>

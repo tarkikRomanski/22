@@ -19,4 +19,12 @@ class PersonalController extends Controller
             return view('404');
         }
     }
+
+    public function getTeamPage(){
+        return view('site.team');
+    }
+
+    public function getEventPage(){
+        return view('site.event');
+    }
 }

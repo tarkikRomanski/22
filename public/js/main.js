@@ -407,16 +407,28 @@ $(document).ready(function() {
         })
     }
 
-    if(document.getElementById('userTeamBlock') !== null){
-        $.ajax({
-            url: '/team/get',
-            method: 'get',
-            success: function (data) {
-                $('#createdTeamsBlock').html(data);
-                $('#openCreateTeamButton').click(function () {
-                    token = $('meta[name="csrf-token"]').attr('content');
 
-                    var modalHeader = ' \
+    if(document.getElementById('imgNav') !== null){
+        $('.navItem').click(function () {
+            $('.navItem.activeItem').removeClass('activeItem');
+            $(this).addClass('activeItem');
+            $('#mainContentBlock').html('<div class="loader">Loading...</div>');
+            $.ajax({
+                url: '/page/'+$(this).attr('data-target'),
+                method: 'get',
+                success: function(data){
+                    $('#mainContentBlock').html(data);
+
+                    if(document.getElementById('userTeamBlock') !== null){
+                        $.ajax({
+                            url: '/team/get',
+                            method: 'get',
+                            success: function (data) {
+                                $('#createdTeamsBlock').html(data);
+                                $('#openCreateTeamButton').click(function () {
+                                    token = $('meta[name="csrf-token"]').attr('content');
+
+                                    var modalHeader = ' \
                 <div class="modal-header"> \
                     <h5 class="modal-title">Create new team</h5> \
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
@@ -425,7 +437,7 @@ $(document).ready(function() {
                 </div> \
            ';
 
-                    var modalBody = ' \
+                                    var modalBody = ' \
                 <form id="teamAddForm" action="/team/add" method="post" role="form"> \
                 <div class="modal-body"> \
                 <div style="text-align: center"> \
@@ -447,7 +459,7 @@ $(document).ready(function() {
                 \
             ';
 
-                    var modalFooter = ' \
+                                    var modalFooter = ' \
             <div class="modal-footer"> \
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
                 <button class="btn btn-main">Create new team</button> \
@@ -455,80 +467,275 @@ $(document).ready(function() {
             </form> \
             ';
 
-                    var modalContent = modalHeader + modalBody + modalFooter;
+                                    var modalContent = modalHeader + modalBody + modalFooter;
 
-                    $('#modal').find('.modal-content')
-                        .html('')
-                        .append(modalContent)
-                        .find('#teamAddForm')
-                        .submit(function(e){
-                            if($('#name').val() == ''){
-                                formBlock = document.getElementById('name').parentNode;
-                                formBlock.className += " has-error";
-                                errorBlock = document.createElement('span');
-                                errorBlock.className = "help-block";
-                                errorTextBlock = document.createElement('strong');
-                                errorText = document.createTextNode('Fiald name empty');
-                                errorTextBlock.appendChild(errorText);
-                                errorBlock.appendChild(errorTextBlock);
-                                formBlock.appendChild(errorBlock);
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(modalContent)
+                                        .find('#teamAddForm')
+                                        .submit(function(e){
+                                            if($('#name').val() == ''){
+                                                formBlock = document.getElementById('name').parentNode;
+                                                formBlock.className += " has-error";
+                                                errorBlock = document.createElement('span');
+                                                errorBlock.className = "help-block";
+                                                errorTextBlock = document.createElement('strong');
+                                                errorText = document.createTextNode('Fiald name empty');
+                                                errorTextBlock.appendChild(errorText);
+                                                errorBlock.appendChild(errorTextBlock);
+                                                formBlock.appendChild(errorBlock);
 
-                                setTimeout(function () {
-                                    formBlock.removeChild(errorBlock);
-                                }, 2000);
+                                                setTimeout(function () {
+                                                    formBlock.removeChild(errorBlock);
+                                                }, 2000);
 
-                                e.preventDefault();
-                            }
+                                                e.preventDefault();
+                                            }
 
-                            else if($('#name').val().length > 10){
-                                formBlock = document.getElementById('name').parentNode;
-                                formBlock.className += " has-error";
-                                errorBlock = document.createElement('span');
-                                errorBlock.className = "help-block";
-                                errorTextBlock = document.createElement('strong');
-                                errorText = document.createTextNode('Value should not exceed 10 characters!');
-                                errorTextBlock.appendChild(errorText);
-                                errorBlock.appendChild(errorTextBlock);
-                                formBlock.appendChild(errorBlock);
+                                            else if($('#name').val().length > 10){
+                                                formBlock = document.getElementById('name').parentNode;
+                                                formBlock.className += " has-error";
+                                                errorBlock = document.createElement('span');
+                                                errorBlock.className = "help-block";
+                                                errorTextBlock = document.createElement('strong');
+                                                errorText = document.createTextNode('Value should not exceed 10 characters!');
+                                                errorTextBlock.appendChild(errorText);
+                                                errorBlock.appendChild(errorTextBlock);
+                                                formBlock.appendChild(errorBlock);
 
-                                setTimeout(function () {
-                                    formBlock.removeChild(errorBlock);
-                                }, 2000);
+                                                setTimeout(function () {
+                                                    formBlock.removeChild(errorBlock);
+                                                }, 2000);
 
-                                e.preventDefault();
+                                                e.preventDefault();
+                                            }
+                                        });
+                                    $('#modal').modal('show');
+                                });
                             }
                         });
-                    $('#modal').modal('show');
-                });
-            }
-        });
-        $.ajax({
-            url: '/team/list',
-            method: 'get',
-            success: function (data) {
-                $('#userTeamBlock').html(data);
-            }
-        });
-        $.ajax({
-            url: '/team/invite',
-            method: 'get',
-            success: function (data) {
-                if(data != false){
-                    $('#inviteBlock').html('<button id="seeAllInvite" class="btn btn-default">U have <span class="badge badge-default">'+data+'</span> invite</button>');
-
-                    $('#seeAllInvite').click(function () {
                         $.ajax({
-                            url: '/team/get/invite',
+                            url: '/team/list',
                             method: 'get',
                             success: function (data) {
-                                $('#inviteBlock').html(data);
+                                $('#userTeamBlock').html(data);
                             }
-                        })
-                    })
+                        });
+                        $.ajax({
+                            url: '/team/invite',
+                            method: 'get',
+                            success: function (data) {
+                                if(data != false){
+                                    $('#inviteBlock').html('<button id="seeAllInvite" class="btn btn-default">U have <span class="badge badge-default">'+data+'</span> invite</button>');
+
+                                    $('#seeAllInvite').click(function () {
+                                        $.ajax({
+                                            url: '/team/get/invite',
+                                            method: 'get',
+                                            success: function (data) {
+                                                $('#inviteBlock').html(data);
+                                            }
+                                        })
+                                    })
+                                }
+                            }
+                        });
+                    }
+
+                    if(document.getElementById('createEventButton') !== null){
+                        $('#createEventButton').click(function(){
+                            $.ajax({
+                                url: '/event/add',
+                                method: 'get',
+                                success: function (modal) {
+                                    $('#modal').find('.modal-content').html(modal);
+                                    $('#modal').modal('show');
+                                }
+                            })
+
+
+                        });
+
+                        $.ajax({
+                            url: '/event/list',
+                            method: 'get',
+                            success: function (list) {
+                                $('#eventBlock').html(list);
+
+
+                                $('.view-event').click(function () {
+                                    var targetId = $(this).attr('data-target');
+
+                                    var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                                    var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                                    var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                                    var modalContent = modalHeader + modalBody + modalFooter;
+
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(modalContent);
+                                    $('#modal').modal('show');
+
+                                    $.ajax({
+                                        url: '/event/'+targetId,
+                                        method: 'get',
+                                        success: function (data) {
+                                            $('#modal').find('.modal-content')
+                                                .html('')
+                                                .append(data);
+
+
+                                            $('#editButton').click(function () {
+                                                $.ajax({
+                                                    url: '/event/edit/'+targetId,
+                                                    method: 'get',
+                                                    success: function (data) {
+                                                        $('#modal').find('.modal-content')
+                                                            .html('')
+                                                            .append(data);
+                                                    }
+                                                })
+                                            });
+                                        }
+                                    })
+                                });
+
+                                $('#eventBlock').find('.checkbox').change(function(e){
+                                    targetId = $(this).attr('data-target');
+                                    console.log(targetId);
+                                    $.ajax({
+                                        url: '/event/'+targetId+'/status',
+                                        method: 'get'
+                                    });
+                                });
+
+                                $('#eventBlock').find('.delete-event').click(function(e){
+                                    targetId = $(this).attr('data-target');
+                                    console.log(targetId);
+                                    $.ajax({
+                                        url: '/event/'+targetId+'/delete',
+                                        method: 'get',
+                                        success: function () {
+                                            parent = document.getElementById('event'+targetId).parentNode;
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                });
+                            }
+                        });
+
+                        $.ajax({
+                            url: '/event/list/complated',
+                            method: 'get',
+                            success: function (list) {
+
+                                $('#complatedEventBlock').html(list);
+
+
+                                $('.view-event').click(function () {
+                                    var targetId = $(this).attr('data-target');
+
+                                    var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                                    var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                                    var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                                    var modalContent = modalHeader + modalBody + modalFooter;
+
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(modalContent);
+                                    $('#modal').modal('show');
+
+                                    $.ajax({
+                                        url: '/event/'+targetId,
+                                        method: 'get',
+                                        success: function (data) {
+                                            $('#modal').find('.modal-content')
+                                                .html('')
+                                                .append(data);
+
+
+                                            $('#editButton').click(function () {
+                                                $.ajax({
+                                                    url: '/event/edit/'+targetId,
+                                                    method: 'get',
+                                                    success: function (data) {
+                                                        $('#modal').find('.modal-content')
+                                                            .html('')
+                                                            .append(data);
+                                                    }
+                                                })
+                                            });
+                                        }
+                                    })
+                                });
+
+                                $('#complatedEventBlock').find('.checkbox').change(function(e){
+                                    targetId = $(this).attr('data-target');
+                                    console.log(targetId);
+                                    $.ajax({
+                                        url: '/event/'+targetId+'/status',
+                                        method: 'get'
+                                    });
+                                });
+
+                                $('#complatedEventBlock').find('.delete-event').click(function(e){
+                                    targetId = $(this).attr('data-target');
+                                    console.log(targetId);
+                                    $.ajax({
+                                        url: '/event/'+targetId+'/delete',
+                                        method: 'get',
+                                        success: function () {
+                                            parent = document.getElementById('event'+targetId).parentNode;
+                                            parent.parentNode.removeChild(parent);
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
                 }
-            }
+            })
+
         });
     }
+
+
 
     if(document.getElementById('sendIbviteButton') !== null){
             $('#newTodoButton').click(function(){

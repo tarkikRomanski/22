@@ -23,7 +23,7 @@
             @if($todo->member_id == Auth::user()->id)
                 <strong> U </strong>
             @else
-                <a href="/u/{{$todo->member_id}}">{{$todo->member_name}}</a>
+                <a href="/u/{{$todo->member_name}}">{{$todo->member_name}}</a>
             @endif
         </small>
     </p>
@@ -54,7 +54,7 @@
         <div class="form-group">
             <label for="text">Text:</label>
             <textarea name="text" id="text" class="form-control" rows="10"></textarea>
-            <button class="btn btn-main">Send comment</button>
+            <button class="btn btn-main icon-send">Send comment</button>
         </div>
 
     {{ Form::close() }}
