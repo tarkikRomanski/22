@@ -20,5 +20,6 @@
         </p>
 </div>
 <div class="modal-footer">
+    <button id="editButton" class="btn btn-default icon-edit">Edit</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </div>

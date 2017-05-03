@@ -20,11 +20,13 @@ Route::group(['middleware'=>'auth'], function() {
         Route::post('/add', ['uses'=>'TodoController@add', 'as'=>'todo.add']);
         Route::match(['get'], '/list', ['uses' => 'TodoController@setList', 'as' => 'todo.set.list']);
         Route::match(['get'], '/{id?}', ['uses' => 'TodoController@setFromId', 'as' => 'todo.set']);
+        Route::match(['get', 'post'], '/edit/{id?}', ['uses' => 'TodoController@editFromId', 'as' => 'todo.edit']);
         Route::match(['get'], '/{id?}/status', ['uses' => 'TodoController@status', 'as' => 'todo.status']);
         Route::match(['get'], '/{id?}/delete', ['uses' => 'TodoController@delete', 'as' => 'todo.delete']);
     });
 
     Route::group(['prefix'=>'team'], function() {
+        Route::match(['post'], '/edit', ['uses' => 'TeamsController@editFromId', 'as' => 'team.edit']);
         Route::post('/add', ['uses'=>'TeamsController@add', 'as'=>'team.add']);
         Route::get('/get', ['uses'=>'TeamsController@getUserTeam', 'as'=>'team.get']);
         Route::get('/list', ['uses'=>'TeamsController@getListTeam', 'as'=>'team.list']);
@@ -37,6 +39,7 @@ Route::group(['middleware'=>'auth'], function() {
             Route::post('/create', ['uses'=>'TodosteamController@add', 'as'=>'team.todo.add']);
             Route::get('/list/{team}', ['uses'=>'TodosteamController@getList', 'as'=>'team.todo.list']);
             Route::match(['get'], '/{id?}', ['uses' => 'TodosteamController@setFromId', 'as' => 'team.todo.set']);
+            Route::match(['get', 'post'], '/edit/{id?}', ['uses' => 'TodosteamController@editFromId', 'as' => 'team.todo.edit']);
             Route::match(['get'], '/{id?}/status', ['uses' => 'TodosteamController@status', 'as' => 'team.todo.status']);
             Route::match(['get'], '/{id?}/delete', ['uses' => 'TodosteamController@delete', 'as' => 'team.todo.delete']);
         });

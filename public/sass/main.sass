@@ -258,3 +258,16 @@ a
 		margin-left: 20px
 		display: inline-block
 		width: auto
+
+.icon-edit
+	position: relative
+	padding-left: 30px
+	&:before
+		@include positionA(0, auto, auto, 2px)
+		content: ''
+		width: 25px
+		height: 25px
+		background-repeat: no-repeat
+		background-position: center
+		background-size: cover
+		background-image: url("../img/edit.png")

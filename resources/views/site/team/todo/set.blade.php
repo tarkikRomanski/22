@@ -60,5 +60,8 @@
     {{ Form::close() }}
 </div>
 <div class="modal-footer">
+    @if($todo->creator_id == Auth::user()->id)
+        <button id="editButton" class="btn btn-default icon-edit">Edit</button>
+    @endif
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </div>

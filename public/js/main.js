@@ -225,9 +225,6 @@ $(document).ready(function() {
     }
 
     if(document.getElementById('todoListBlock') !== null){
-
-
-
         $.ajax({
             url: '/todo/list',
             method: 'get',
@@ -367,6 +364,19 @@ $(document).ready(function() {
                                 $('#modal').find('.modal-content')
                                     .html('')
                                     .append(data);
+
+
+                                $('#editButton').click(function () {
+                                    $.ajax({
+                                        url: '/todo/edit/'+targetId,
+                                        method: 'get',
+                                        success: function (data) {
+                                            $('#modal').find('.modal-content')
+                                                .html('')
+                                                .append(data);
+                                        }
+                                    })
+                                });
                             }
                         })
                     });
@@ -700,6 +710,18 @@ $(document).ready(function() {
                                 $('#modal').find('.modal-content')
                                     .html('')
                                     .append(data);
+
+                                $('#editButton').click(function () {
+                                    $.ajax({
+                                        url: '/team/todo/edit/'+targetId,
+                                        method: 'get',
+                                        success: function (data) {
+                                            $('#modal').find('.modal-content')
+                                                .html('')
+                                                .append(data);
+                                        }
+                                    })
+                                });
                             }
                         })
                     });

@@ -8,6 +8,19 @@
                 <div class="col-sm-4 wrapTeamBar">
                     <button id="sendIbviteButton" class="btn btn-block btn-main">Send invite</button>
                     <button id="newTodoButton" class="btn btn-block btn-main">Add new 2Do</button>
+                    <h4>Edit team information:</h4>
+                    {{ Form::open(['route'=>'team.edit', 'method'=>'post']) }}
+                        {{ Form::hidden('team', $team->id) }}
+                        <div class="form-group">
+                            <label for="teamName">Team name:</label>
+                            {{ Form::text('teamName', $team->name, ['class'=>'form-control']) }}
+                        </div>
+                        <div class="form-group">
+                            <label for="teamDescription">Team description:</label>
+                            {{ Form::textarea('teamDescription', $team->description, ['class'=>'form-control']) }}
+                        </div>
+                        <button class="btn btn-block btn-main">Edit</button>
+                    {{ Form::close() }}
                 </div>
             @endif
 

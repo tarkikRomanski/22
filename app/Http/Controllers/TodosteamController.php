@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Member;
 use App\Todosteam;
 use App\Todoteamcomment;
 use Carbon\Carbon;
@@ -73,5 +74,30 @@ class TodosteamController extends Controller
             if($todo->memory_id == Auth::user()->id || $todo->creator_id == Auth::user()->id)
                 Todosteam::where('id', $id)->delete();
         }
+    }
+
+    public function editFromId(Request $request, $id=null){
+        if($request->isMethod('post')){
+
+            $input = $request->all();
+
+            Todosteam::where('id', $input['todo'])
+                ->update([
+                   'title'=>$input['title'],
+                    'description'=>$input['description'],
+                    'memory_id'=>$input['member']
+                ]);
+
+            return back();
+        }
+
+        $todo = Todosteam::findById($id);
+        $data = [
+            'todo'=> $todo,
+            'select' => Member::getOnlyConfirmMembersList($todo->team_id)
+        ];
+
+
+        echo view('site.team.todo.edit', $data);
     }
 }

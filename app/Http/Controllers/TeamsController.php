@@ -83,4 +83,18 @@ class TeamsController extends Controller
             echo false;
         }
     }
+
+    public function editFromId(Request $request){
+        if($request->isMethod('post')){
+            $input = $request->all();
+
+            Team::where('id', $input['team'])
+                ->update([
+                    'name'=>$input['teamName'],
+                    'description'=>$input['teamDescription']
+                ]);
+
+            return back();
+        }
+    }
 }

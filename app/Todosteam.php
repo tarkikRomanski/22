@@ -31,6 +31,7 @@ public static function findById($id){
         ->join('users as creator', 'todosteam.creator_id', '=', 'creator.id' )
         ->select(
             'todosteam.id as id',
+            'todosteam.team_id as team_id',
             'todosteam.title as title',
             'todosteam.description as description',
             'todosteam.status as status',

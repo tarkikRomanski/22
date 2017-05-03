@@ -75,4 +75,41 @@ class TodoController extends Controller
                 Todo::where('id', $id)->delete();
         }
     }
+
+    public function editFromId(Request $request, $id = null){
+        if($request->isMethod('post')){
+            $input = $request->all();
+
+            $update = [
+                'title' => $input['title'],
+                'description' => $input['description']
+            ];
+
+            if (isset($input['ttomorrow'])) {
+                $date = Carbon::parse('tomorrow');
+                $update['date_year'] = $date->year;
+                $update['date_month'] = $date->month;
+                $update['date_day'] = $date->day;
+            }
+
+            Todo::where('id', $input['id'])
+                ->update($update);
+
+            return back();
+        }
+
+        if($id != null){
+            if(Todo::where('id', $id)->exists()) {
+
+                $todo = Todo::find($id);
+
+                if($todo->owner_id == Auth::user()->id)
+                    echo view('site.todo.edit', ['todo' => $todo]);
+                else
+                    echo '<h2>You dont have promise!</h2>';
+            } else {
+                echo '<h2>Data does not exist</h2>';
+            }
+        }
+    }
 }
