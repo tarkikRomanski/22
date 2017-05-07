@@ -224,6 +224,8 @@ $(document).ready(function() {
         });
     }
 
+
+
     if(document.getElementById('todoListBlock') !== null){
         $.ajax({
             url: '/todo/list',
@@ -733,7 +735,10 @@ $(document).ready(function() {
             })
 
         });
+
+        $('[data-target="team"]').click();
     }
+
 
 
 
@@ -761,8 +766,8 @@ $(document).ready(function() {
                 <div class="modal-body"> \
                 <input name="_token" type="hidden" value="'+token+'" >\
                 <div class="form-group"> \
-                    <label for="name" class="form-control-label">User name or email:</label> \
-                    <input type="text" class="form-control" id="name" name="name"> \
+                    <label for="invite" class="form-control-label">User name or email:</label> \
+                    <input type="text" class="form-control" id="invite" name="invite"> \
                 </div> \
             ';
 
@@ -784,8 +789,8 @@ $(document).ready(function() {
 
                     e.preventDefault();
 
-                    if($('#title').val() == ''){
-                        formBlock = document.getElementById('name').parentNode;
+                    if($('#invite').val() == ''){
+                        formBlock = document.getElementById('invite').parentNode;
                         formBlock.className += " has-error";
                         errorBlock = document.createElement('span');
                         errorBlock.className = "help-block";
@@ -801,11 +806,11 @@ $(document).ready(function() {
 
                     } else {
                         $.ajax({
-                            url: '/team/invite/'+$('#name').val(),
+                            url: '/team/invite/'+$('#invite').val(),
                             method: 'get',
                             success: function (data) {
                                 if (data == false){
-                                    formBlock = document.getElementById('name').parentNode;
+                                    formBlock = document.getElementById('invite').parentNode;
                                     formBlock.className += " has-error";
                                     errorBlock = document.createElement('span');
                                     errorBlock.className = "help-block";

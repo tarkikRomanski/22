@@ -15,8 +15,33 @@
                             </strong>
                         </p>
                     </div>
-                    <div class="col-12"></div>
+                    <div class="col-12">
+
+
+
+                    </div>
                 </div>
+            </div>
+            <div class="col-md-8 col-sm-9">
+                <h1 class="modal-title">Daily statistic</h1>
+
+                <small>{{ \Carbon\Carbon::today()->toDateString() }}</small>
+                <h2>Today {{ $user->name }} have:</h2>
+                @if($todayTask)
+                    <p>{{ $todayTask }} tasks</p>
+                @endif
+                @if($overTask)
+                    <p>{{ $overTask }} overdue tasks</p>
+                @endif
+                @if($teamTask)
+                    <p>{{ $user->name }} need complate {{ $teamTask }} task in team</p>
+                @endif
+                @if($ownerTeamTask)
+                    <p>{{ $user->name }} have {{ $ownerTeamTask }} task in team</p>
+                @endif
+                @if($invite)
+                    <p>{{ $invite }} invites in team</p>
+                @endif
             </div>
         </div>
     </div>

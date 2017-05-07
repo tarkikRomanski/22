@@ -25,6 +25,23 @@ class Todo extends Model
         return $query->where('owner_id', Auth::user()->id);
     }
 
+    public static function overdayTasksId($date, $id){
+        $notDoneLastYear = Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', '<', $date->year);
+        $notDoneLastMonth = Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', '<', $date->month);
+        return Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', '<', $date->day)
+            ->unionAll($notDoneLastYear)
+            ->unionAll($notDoneLastMonth);
+    }
+
     public static function overdayTasks($date){
         $notDoneLastYear = Todo::getUserTasc()
             ->where('status', false)
@@ -40,6 +57,29 @@ class Todo extends Model
             ->where('date_day', '<', $date->day)
             ->unionAll($notDoneLastYear)
             ->unionAll($notDoneLastMonth);
+    }
+
+    public static function todayListId($date, $id){
+        $notDoneLastYear = Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', '<', $date->year);
+        $notDoneLastMonth = Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', '<', $date->month);
+        $notDoneThisMonth = Todo::where('owner_id', $id)
+            ->where('status', false)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', '<', $date->day);
+
+        return Todo::where('owner_id', $id)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', $date->day)
+            ->unionAll($notDoneThisMonth)
+            ->unionAll($notDoneLastMonth)
+            ->unionAll($notDoneLastYear);
     }
 
     public static function todayList($date){

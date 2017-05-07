@@ -372,6 +372,7 @@ a {
   background: #eeeeee;
   padding: 20px; }
   .imgNav img {
+    height: 60px;
     max-height: 110px; }
   .imgNav .navItem {
     text-align: center;

@@ -20,6 +20,14 @@ class Member extends Model
         return false;
     }
 
+    public static function checkInviteId($id){
+        $userId = $id;
+        $invite = Member::where('user_id', $userId)->where('status', false);
+        if($invite->exists())
+            return count($invite->get()->toArray());
+        return false;
+    }
+
     public static function getInvite(){
         $userId = Auth::user()->id;
         $invite = Member::where('user_id', $userId)
