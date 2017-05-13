@@ -59,6 +59,30 @@ class Todo extends Model
             ->unionAll($notDoneLastMonth);
     }
 
+    public static function listForDateAndOwner($date, $owner){
+        return Todo::where('owner_id', $owner)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', $date->day);
+    }
+
+    public static function listForBehDateAndStatus($date, $id, $status){
+        $notDoneLastYear = Todo::where('owner_id', $id)
+            ->where('status', $status)
+            ->where('date_year', '<', $date->year);
+        $notDoneLastMonth = Todo::where('owner_id', $id)
+            ->where('status', $status)
+            ->where('date_year', $date->year)
+            ->where('date_month', '<', $date->month);
+        return Todo::where('owner_id', $id)
+            ->where('status', $status)
+            ->where('date_year', $date->year)
+            ->where('date_month', $date->month)
+            ->where('date_day', '<', $date->day)
+            ->unionAll($notDoneLastMonth)
+            ->unionAll($notDoneLastYear);
+    }
+
     public static function todayListId($date, $id){
         $notDoneLastYear = Todo::where('owner_id', $id)
             ->where('status', false)

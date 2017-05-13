@@ -29,8 +29,10 @@ class TodoController extends Controller
         }
     }
 
-    public function setList(){
-        $date = Carbon::parse('today');
+    public function setList($where = null){
+        $where = $where==null?'today':$where;
+
+        $date = Carbon::parse($where);
 
         if(!Todo::todayList($date)->exists()) {
             $data = [
@@ -38,6 +40,7 @@ class TodoController extends Controller
             ];
         }
             $data['todos'] = Todo::todayList($date)->get();
+            $data['where'] = $where;
 
             echo view('site.todo.list', $data);
     }

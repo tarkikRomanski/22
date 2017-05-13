@@ -102,6 +102,34 @@ class Event extends Model
             );
     }
 
+    public static function getForUserEvents($status, $id){
+        return Event::where('events.owner_id', $id)
+            ->where('events.status', $status)
+            ->join('types', 'events.type_id', '=', 'types.id')
+            ->join('categorys', 'events.category_id', '=', 'categorys.id')
+            ->select(
+                'events.id',
+                'categorys.name as category',
+                'categorys.color as category_color',
+                'types.name as type',
+                'types.color as type_color',
+                'events.image',
+                'events.title',
+                'events.text',
+                'events.date_start_year',
+                'events.date_start_month',
+                'events.date_start_day',
+                'events.time_start_hours',
+                'events.time_start_minutes',
+                'events.date_end_year',
+                'events.date_end_month',
+                'events.date_end_day',
+                'events.time_end_hours',
+                'events.time_end_minutes',
+                'events.status'
+            );
+    }
+
     public static function getUserEvent($id){
         return Event::where('events.id', $id)
             ->join('types', 'events.type_id', '=', 'types.id')

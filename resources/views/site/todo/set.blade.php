@@ -9,7 +9,7 @@
         <p>Status: <strong class="{{ $todo->status==0?'text-warning':'text-success' }}">{{ $todo->status==0?'Not done':'Done' }}</strong></p>
         <p>
             @if(\Carbon\Carbon::createFromDate($todo->date_year, $todo->date_month, $todo->date_day)->toDateString()
-                    != \Carbon\Carbon::today()->toDateString())
+                    < \Carbon\Carbon::today()->toDateString())
                 <span class="text-danger">
                     U delayed execution!!!
                 </span>

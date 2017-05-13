@@ -1,3 +1,200 @@
+var showDailyStatistic = function(){
+    $.ajax({
+        url: '/tstatistic',
+        method: 'get',
+        success: function (data) {
+            $('#modal').find('.modal-content').html(data);
+            $('#modal').modal('show');
+        }
+    });
+};
+var showTodoList = function(where){
+    $.ajax({
+        url: '/todo/list/'+where,
+        method: 'get',
+        success: function (data) {
+            $('#todoListBlock').html(data);
+            if(document.getElementById('newTodoButton') !== null) {
+                $('#newTodoButton').click(function () {
+                    token = $('meta[name="csrf-token"]').attr('content');
+
+                    var modalHeader = ' \
+                <div class="modal-header"> \
+                    <h5 class="modal-title">Adding new 2Do</h5> \
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                        <span aria-hidden="true">&times;</span> \
+                    </button> \
+                </div> \
+           ';
+
+                    var modalBody = ' \
+                <div class="modal-body"> \
+                <form id="todoAddForm" action="/todo/add" method="post" role="form"> \
+                <input name="_token" type="hidden" value="'+token+'" >\
+                <div class="form-group"> \
+                    <label for="title" class="form-control-label">Title:</label> \
+                    <input type="text" class="form-control" id="title" name="title"> \
+                </div> \
+                <div class="form-group"> \
+                    <label for="description" class="form-control-label">Description:</label> \
+                    <textarea class="form-control" id="description" name="description"></textarea> \
+                </div> \
+               <fieldset class="form-group"> \
+                <legend>When execute?</legend> \
+            <div class="form-check"> \
+                <label class="form-check-label"> \
+                <input type="radio" class="form-check-input" name="when" id="today" value="today" checked> \                \
+                Today \
+            </label> \
+            </div> \
+            <div class="form-check"> \
+                <label class="form-check-label"> \
+                <input type="radio" class="form-check-input" name="when" id="tomorrow" value="tomorrow"> \
+                Tomorrow \
+            </label> \
+            </div> \
+            </fieldset> \
+            ';
+
+                    var modalFooter = ' \
+            <div class="modal-footer"> \
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                <button class="btn btn-main">Add new 2Do</button> \
+            </div> \
+            ';
+
+                    var modalContent = modalHeader + modalBody + modalFooter;
+
+                    $('#modal').find('.modal-content')
+                        .html('')
+                        .append(modalContent)
+                        .find('#todoAddForm')
+                        .submit(function(e){
+                            if($('#title').val() == ''){
+                                formBlock = document.getElementById('title').parentNode;
+                                formBlock.className += " has-error";
+                                errorBlock = document.createElement('span');
+                                errorBlock.className = "help-block";
+                                errorTextBlock = document.createElement('strong');
+                                errorText = document.createTextNode('Fiald title empty');
+                                errorTextBlock.appendChild(errorText);
+                                errorBlock.appendChild(errorTextBlock);
+                                formBlock.appendChild(errorBlock);
+
+                                setTimeout(function () {
+                                    formBlock.removeChild(errorBlock);
+                                }, 2000);
+
+                                e.preventDefault();
+                            }
+
+                            else if($('#title').val().length > 60){
+                                formBlock = document.getElementById('title').parentNode;
+                                formBlock.className += " has-error";
+                                errorBlock = document.createElement('span');
+                                errorBlock.className = "help-block";
+                                errorTextBlock = document.createElement('strong');
+                                errorText = document.createTextNode('Value should not exceed 60 characters!');
+                                errorTextBlock.appendChild(errorText);
+                                errorBlock.appendChild(errorTextBlock);
+                                formBlock.appendChild(errorBlock);
+
+                                setTimeout(function () {
+                                    formBlock.removeChild(errorBlock);
+                                }, 2000);
+
+                                e.preventDefault();
+                            }
+                        });
+                    $('#modal').modal('show');
+                });
+            }
+            if(document.getElementsByClassName('view-todo').length > 0) {
+                $('.view-todo').click(function () {
+                    var targetId = $(this).attr('data-target');
+
+                    var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                    var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                    var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                    var modalContent = modalHeader + modalBody + modalFooter;
+
+                    $('#modal').find('.modal-content')
+                        .html('')
+                        .append(modalContent);
+                    $('#modal').modal('show');
+
+                    $.ajax({
+                        url: '/todo/'+targetId,
+                        method: 'get',
+                        success: function (data) {
+                            $('#modal').find('.modal-content')
+                                .html('')
+                                .append(data);
+
+
+                            $('#editButton').click(function () {
+                                $.ajax({
+                                    url: '/todo/edit/'+targetId,
+                                    method: 'get',
+                                    success: function (data) {
+                                        $('#modal').find('.modal-content')
+                                            .html('')
+                                            .append(data);
+                                    }
+                                })
+                            });
+                        }
+                    })
+                });
+            }
+
+            $('#todoListBlock').find('.checkbox').change(function(e){
+                targetId = $(this).attr('data-target');
+                console.log(targetId);
+                $.ajax({
+                    url: '/todo/'+targetId+'/status',
+                    method: 'get',
+                    success: function(){
+                        changeDate = $('#changeTodoListDateButton').attr('data-target')=='today'?'tomorrow':'today';
+                        showTodoList(changeDate);
+                    }
+                });
+            });
+
+            $('#todoListBlock').find('.delete-todo').click(function(e){
+                targetId = $(this).attr('data-target');
+                console.log(targetId);
+                $.ajax({
+                    url: '/todo/'+targetId+'/delete',
+                    method: 'get',
+                    success: function () {
+                        parent = document.getElementById('todo'+targetId).parentNode;
+                        parent.parentNode.removeChild(parent);
+                    }
+                });
+            });
+        }
+    });
+}
+
 $(document).ready(function() {
     if(document.getElementById('voice') !== null) {
         $('#voice').click(function () {
@@ -213,202 +410,18 @@ $(document).ready(function() {
 
     if(document.getElementById('showDailyStatistic') !== null){
         $('#showDailyStatistic').click(function(){
-        $.ajax({
-            url: '/tstatistic',
-            method: 'get',
-            success: function (data) {
-                $('#modal').find('.modal-content').html(data);
-                $('#modal').modal('show');
-            }
-        });
+            showDailyStatistic();
         });
     }
-
-
 
     if(document.getElementById('todoListBlock') !== null){
-        $.ajax({
-            url: '/todo/list',
-            method: 'get',
-            success: function (data) {
-                $('#todoListBlock').html(data);
-                if(document.getElementById('newTodoButton') !== null) {
-                    $('#newTodoButton').click(function () {
-                        token = $('meta[name="csrf-token"]').attr('content');
-
-                        var modalHeader = ' \
-                <div class="modal-header"> \
-                    <h5 class="modal-title">Adding new 2Do</h5> \
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
-                        <span aria-hidden="true">&times;</span> \
-                    </button> \
-                </div> \
-           ';
-
-                        var modalBody = ' \
-                <div class="modal-body"> \
-                <form id="todoAddForm" action="/todo/add" method="post" role="form"> \
-                <input name="_token" type="hidden" value="'+token+'" >\
-                <div class="form-group"> \
-                    <label for="title" class="form-control-label">Title:</label> \
-                    <input type="text" class="form-control" id="title" name="title"> \
-                </div> \
-                <div class="form-group"> \
-                    <label for="description" class="form-control-label">Description:</label> \
-                    <textarea class="form-control" id="description" name="description"></textarea> \
-                </div> \
-               <fieldset class="form-group"> \
-                <legend>When execute?</legend> \
-            <div class="form-check"> \
-                <label class="form-check-label"> \
-                <input type="radio" class="form-check-input" name="when" id="today" value="today" checked> \                \
-                Today \
-            </label> \
-            </div> \
-            <div class="form-check"> \
-                <label class="form-check-label"> \
-                <input type="radio" class="form-check-input" name="when" id="tomorrow" value="tomorrow"> \
-                Tomorrow \
-            </label> \
-            </div> \
-            </fieldset> \
-            ';
-
-                        var modalFooter = ' \
-            <div class="modal-footer"> \
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
-                <button class="btn btn-main">Add new 2Do</button> \
-            </div> \
-            ';
-
-                        var modalContent = modalHeader + modalBody + modalFooter;
-
-                        $('#modal').find('.modal-content')
-                            .html('')
-                            .append(modalContent)
-                            .find('#todoAddForm')
-                            .submit(function(e){
-                                if($('#title').val() == ''){
-                                    formBlock = document.getElementById('title').parentNode;
-                                    formBlock.className += " has-error";
-                                    errorBlock = document.createElement('span');
-                                    errorBlock.className = "help-block";
-                                    errorTextBlock = document.createElement('strong');
-                                    errorText = document.createTextNode('Fiald title empty');
-                                    errorTextBlock.appendChild(errorText);
-                                    errorBlock.appendChild(errorTextBlock);
-                                    formBlock.appendChild(errorBlock);
-
-                                    setTimeout(function () {
-                                        formBlock.removeChild(errorBlock);
-                                    }, 2000);
-
-                                    e.preventDefault();
-                                }
-
-                                else if($('#title').val().length > 60){
-                                    formBlock = document.getElementById('title').parentNode;
-                                    formBlock.className += " has-error";
-                                    errorBlock = document.createElement('span');
-                                    errorBlock.className = "help-block";
-                                    errorTextBlock = document.createElement('strong');
-                                    errorText = document.createTextNode('Value should not exceed 60 characters!');
-                                    errorTextBlock.appendChild(errorText);
-                                    errorBlock.appendChild(errorTextBlock);
-                                    formBlock.appendChild(errorBlock);
-
-                                    setTimeout(function () {
-                                        formBlock.removeChild(errorBlock);
-                                    }, 2000);
-
-                                    e.preventDefault();
-                                }
-                            });
-                        $('#modal').modal('show');
-                    });
-                }
-                if(document.getElementsByClassName('view-todo').length > 0) {
-                    $('.view-todo').click(function () {
-                        var targetId = $(this).attr('data-target');
-
-                        var modalHeader = ' \
-                            <div class="modal-header"> \
-                                <h5 class="modal-title"></h5> \
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
-                                    <span aria-hidden="true">&times;</span> \
-                                </button> \
-                            </div> \
-                       ';
-
-                                    var modalBody = ' \
-                            <div class="modal-body"> \
-                            <div class="loader">Loading...</div> \
-                            </div> \
-                        ';
-
-                                    var modalFooter = ' \
-                        <div class="modal-footer"> \
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
-                        </div> \
-                        ';
-
-                        var modalContent = modalHeader + modalBody + modalFooter;
-
-                        $('#modal').find('.modal-content')
-                            .html('')
-                            .append(modalContent);
-                        $('#modal').modal('show');
-
-                        $.ajax({
-                            url: '/todo/'+targetId,
-                            method: 'get',
-                            success: function (data) {
-                                $('#modal').find('.modal-content')
-                                    .html('')
-                                    .append(data);
-
-
-                                $('#editButton').click(function () {
-                                    $.ajax({
-                                        url: '/todo/edit/'+targetId,
-                                        method: 'get',
-                                        success: function (data) {
-                                            $('#modal').find('.modal-content')
-                                                .html('')
-                                                .append(data);
-                                        }
-                                    })
-                                });
-                            }
-                        })
-                    });
-                }
-
-                $('#todoListBlock').find('.checkbox').change(function(e){
-                    targetId = $(this).attr('data-target');
-                    console.log(targetId);
-                   $.ajax({
-                       url: '/todo/'+targetId+'/status',
-                       method: 'get'
-                   });
-                });
-
-                $('#todoListBlock').find('.delete-todo').click(function(e){
-                    targetId = $(this).attr('data-target');
-                    console.log(targetId);
-                    $.ajax({
-                        url: '/todo/'+targetId+'/delete',
-                        method: 'get',
-                        success: function () {
-                            parent = document.getElementById('todo'+targetId).parentNode;
-                            parent.parentNode.removeChild(parent);
-                        }
-                    });
-                });
-            }
-        })
+        showTodoList('today');
+        $('#changeTodoListDateButton').click(function () {
+            showTodoList($(this).attr('data-target'));
+            $(this).html($(this).html()=='Today'?'Tomorrow':'Today')
+                .attr('data-target', $(this).attr('data-target')=='today'?'tomorrow':'today');
+        });
     }
-
 
     if(document.getElementById('imgNav') !== null){
         $('.navItem').click(function () {
@@ -739,9 +752,6 @@ $(document).ready(function() {
         $('[data-target="team"]').click();
     }
 
-
-
-
     if(document.getElementById('sendIbviteButton') !== null){
             $('#newTodoButton').click(function(){
             $('html, body').animate({
@@ -961,6 +971,350 @@ $(document).ready(function() {
                     });
                 });
             }
+        });
+    }
+
+    if(document.getElementById('query') !== null) {
+        $('#team').change(function(){
+            $.ajax({
+                url: '/user/list/'+$(this).val(),
+                method: 'get',
+                success: function (data) {
+                    $('#users').html(data);
+                }
+            });
+        });
+
+        $('#done').click(function () {
+            $.ajax({
+                url: '/query/list/'+$('#team').val()+'/'+$('#users').val()+'/1',
+                method: 'get',
+                success: function (data) {
+                    $('#todolist').html(data);
+
+                    if(document.getElementsByClassName('view-todo').length > 0) {
+                        $('.view-todo').click(function () {
+                            var targetId = $(this).attr('data-target');
+
+                            var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                            var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                            var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                            var modalContent = modalHeader + modalBody + modalFooter;
+
+                            $('#modal').find('.modal-content')
+                                .html('')
+                                .append(modalContent);
+                            $('#modal').modal('show');
+
+                            $.ajax({
+                                url: '/team/todo/'+targetId,
+                                method: 'get',
+                                success: function (data) {
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(data);
+
+                                    $('#editButton').click(function () {
+                                        $.ajax({
+                                            url: '/team/todo/edit/'+targetId,
+                                            method: 'get',
+                                            success: function (data) {
+                                                $('#modal').find('.modal-content')
+                                                    .html('')
+                                                    .append(data);
+                                            }
+                                        })
+                                    });
+                                }
+                            })
+                        });
+                    }
+
+                    $('#teamTodoListBlock').find('.checkbox').change(function(e){
+                        targetId = $(this).attr('data-target');
+                        console.log(targetId);
+                        $.ajax({
+                            url: '/team/todo/'+targetId+'/status',
+                            method: 'get'
+                        });
+                    });
+
+                    $('#teamTodoListBlock').find('.delete-todo').click(function(e){
+                        targetId = $(this).attr('data-target');
+                        console.log(targetId);
+                        $.ajax({
+                            url: '/team/todo/'+targetId+'/delete',
+                            method: 'get',
+                            success: function () {
+                                parent = document.getElementById('todo'+targetId).parentNode;
+                                parent.parentNode.removeChild(parent);
+                            }
+                        });
+                    });
+                }
+            })
+        });
+        $('#ndone').click(function () {
+            $.ajax({
+                url: '/query/list/'+$('#team').val()+'/'+$('#users').val()+'/0',
+                method: 'get',
+                success: function (data) {
+                    $('#todolist').html(data);
+
+                    if(document.getElementsByClassName('view-todo').length > 0) {
+                        $('.view-todo').click(function () {
+                            var targetId = $(this).attr('data-target');
+
+                            var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                            var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                            var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                            var modalContent = modalHeader + modalBody + modalFooter;
+
+                            $('#modal').find('.modal-content')
+                                .html('')
+                                .append(modalContent);
+                            $('#modal').modal('show');
+
+                            $.ajax({
+                                url: '/team/todo/'+targetId,
+                                method: 'get',
+                                success: function (data) {
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(data);
+
+                                    $('#editButton').click(function () {
+                                        $.ajax({
+                                            url: '/team/todo/edit/'+targetId,
+                                            method: 'get',
+                                            success: function (data) {
+                                                $('#modal').find('.modal-content')
+                                                    .html('')
+                                                    .append(data);
+                                            }
+                                        })
+                                    });
+                                }
+                            })
+                        });
+                    }
+
+                    $('#teamTodoListBlock').find('.checkbox').change(function(e){
+                        targetId = $(this).attr('data-target');
+                        console.log(targetId);
+                        $.ajax({
+                            url: '/team/todo/'+targetId+'/status',
+                            method: 'get'
+                        });
+                    });
+
+                    $('#teamTodoListBlock').find('.delete-todo').click(function(e){
+                        targetId = $(this).attr('data-target');
+                        console.log(targetId);
+                        $.ajax({
+                            url: '/team/todo/'+targetId+'/delete',
+                            method: 'get',
+                            success: function () {
+                                parent = document.getElementById('todo'+targetId).parentNode;
+                                parent.parentNode.removeChild(parent);
+                            }
+                        });
+                    });
+                }
+            })
+        });
+    }
+
+    if(document.getElementById('queryTodoListBlock') !== null) {
+        $.ajax({
+            url: '/team/todo/list/'+$('#team').val(),
+            method: 'get',
+            success: function (data) {
+                $('#queryTodoListBlock').html(data);
+
+                if(document.getElementsByClassName('view-todo').length > 0) {
+                    $('.view-todo').click(function () {
+                        var targetId = $(this).attr('data-target');
+
+                        var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                        var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                        var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                        var modalContent = modalHeader + modalBody + modalFooter;
+
+                        $('#modal').find('.modal-content')
+                            .html('')
+                            .append(modalContent);
+                        $('#modal').modal('show');
+
+                        $.ajax({
+                            url: '/team/todo/'+targetId,
+                            method: 'get',
+                            success: function (data) {
+                                $('#modal').find('.modal-content')
+                                    .html('')
+                                    .append(data);
+
+                                $('#editButton').click(function () {
+                                    $.ajax({
+                                        url: '/team/todo/edit/'+targetId,
+                                        method: 'get',
+                                        success: function (data) {
+                                            $('#modal').find('.modal-content')
+                                                .html('')
+                                                .append(data);
+                                        }
+                                    })
+                                });
+                            }
+                        })
+                    });
+                }
+
+                $('#queryTodoListBlock').find('.delete-todo').click(function(e){
+                    targetId = $(this).attr('data-target');
+                    console.log(targetId);
+                    $.ajax({
+                        url: '/team/todo/'+targetId+'/delete',
+                        method: 'get',
+                        success: function () {
+                            parent = document.getElementById('todo'+targetId).parentNode;
+                            parent.parentNode.removeChild(parent);
+                        }
+                    });
+                });
+            }
+        });
+        $('#team').change(function () {
+            $.ajax({
+                url: '/team/todo/list/'+$(this).val(),
+                method: 'get',
+                success: function (data) {
+                    $('#queryTodoListBlock').html(data);
+
+                    if(document.getElementsByClassName('view-todo').length > 0) {
+                        $('.view-todo').click(function () {
+                            var targetId = $(this).attr('data-target');
+
+                            var modalHeader = ' \
+                            <div class="modal-header"> \
+                                <h5 class="modal-title"></h5> \
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> \
+                                    <span aria-hidden="true">&times;</span> \
+                                </button> \
+                            </div> \
+                       ';
+
+                            var modalBody = ' \
+                            <div class="modal-body"> \
+                            <div class="loader">Loading...</div> \
+                            </div> \
+                        ';
+
+                            var modalFooter = ' \
+                        <div class="modal-footer"> \
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> \
+                        </div> \
+                        ';
+
+                            var modalContent = modalHeader + modalBody + modalFooter;
+
+                            $('#modal').find('.modal-content')
+                                .html('')
+                                .append(modalContent);
+                            $('#modal').modal('show');
+
+                            $.ajax({
+                                url: '/team/todo/'+targetId,
+                                method: 'get',
+                                success: function (data) {
+                                    $('#modal').find('.modal-content')
+                                        .html('')
+                                        .append(data);
+
+                                    $('#editButton').click(function () {
+                                        $.ajax({
+                                            url: '/team/todo/edit/'+targetId,
+                                            method: 'get',
+                                            success: function (data) {
+                                                $('#modal').find('.modal-content')
+                                                    .html('')
+                                                    .append(data);
+                                            }
+                                        })
+                                    });
+                                }
+                            })
+                        });
+                    }
+
+                    $('#queryTodoListBlock').find('.delete-todo').click(function(e){
+                        targetId = $(this).attr('data-target');
+                        console.log(targetId);
+                        $.ajax({
+                            url: '/team/todo/'+targetId+'/delete',
+                            method: 'get',
+                            success: function () {
+                                parent = document.getElementById('todo'+targetId).parentNode;
+                                parent.parentNode.removeChild(parent);
+                            }
+                        });
+                    });
+                }
+            });
         });
     }
 });

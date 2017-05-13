@@ -17,6 +17,7 @@
                             </strong></p>
                     </div>
                     <div class="col-12">
+                        <button class="btn btn-block btn-main" data-target="tomorrow" id="changeTodoListDateButton">Tomorow</button>
                         <div id="todoListBlock"><div class="loader">Loading...</div></div>
                     </div>
                 </div>
@@ -33,6 +34,11 @@
                             <div data-target="event" class="col-2 navItem">
                                 {{ Html::image('img/file.png', 'Events') }}
                                 <strong>Events</strong>
+                            </div>
+
+                            <div data-target="query" class="col-2 navItem">
+                                {{ Html::image('img/time.png', 'Events') }}
+                                <strong>Query</strong>
                             </div>
                         </div>
                     </nav>
@@ -52,4 +58,5 @@
             </div>
         </div>
     </div>
+
 @endsection

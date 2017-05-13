@@ -1,13 +1,20 @@
-<h2>2day 2Do list:</h2>
+<h2>2{{$where=='today'?'day':'morrow'}} 2Do list:</h2>
 <button class="btn btn-block btn-main" id="newTodoButton">Add new 2Do</button>
 @if(isset($messeage))
     <h3>{!!  $messeage !!}</h3>
 @endif
 @foreach($todos as $todo)
+    @if(
+        $where == 'tomorrow' &&
+        \Carbon\Carbon::createFromDate($todo->date_year, $todo->date_month, $todo->date_day)->toDateString()
+                    != \Carbon\Carbon::parse($where)->toDateString()
+    )
+        @continue
+    @endif
     <div class="todo-item
                 {{
                     \Carbon\Carbon::createFromDate($todo->date_year, $todo->date_month, $todo->date_day)->toDateString()
-                    != \Carbon\Carbon::today()->toDateString()
+                    != \Carbon\Carbon::parse($where)->toDateString()
                     ? 'todo-old'
                     : ''
                 }}">
