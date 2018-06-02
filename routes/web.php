@@ -8,18 +8,6 @@ Route::get('/', function (){
    return redirect('/home');
 });
 
-Route::match(['post', 'get'], '/query', ['uses'=>'PersonalController@querynine', 'as'=>'nine']);
-Route::match(['get'], '/user/list/{team?}', ['uses'=>'PersonalController@teamUsersList', 'as'=>'nine2']);
-Route::match(['get'], '/query/list/{team?}/{user?}/{s?}', ['uses'=>'PersonalController@teamTodoList', 'as'=>'nine3']);
-Route::match(['get', 'post'], '/query/1', ['uses'=>'QueryController@firstQ', 'as'=>'q1']);
-Route::match(['get', 'post'], '/query/2', ['uses'=>'QueryController@secondQ', 'as'=>'q2']);
-Route::match(['get', 'post'], '/query/3', ['uses'=>'QueryController@threeQ', 'as'=>'q3']);
-Route::match(['get', 'post'], '/query/4', ['uses'=>'QueryController@fourdQ', 'as'=>'q4']);
-Route::match(['get', 'post'], '/query/5', ['uses'=>'QueryController@fivedQ', 'as'=>'q5']);
-Route::match(['get', 'post'], '/query/6', ['uses'=>'QueryController@sixdQ', 'as'=>'q6']);
-Route::match(['get', 'post'], '/query/7', ['uses'=>'QueryController@sevenQ', 'as'=>'q7']);
-Route::match(['get', 'post'], '/query/8', ['uses'=>'QueryController@egeQ', 'as'=>'q8']);
-
 Route::group(['middleware'=>'auth'], function() {
     Route::get('/home', ['uses' => 'HomeController@index', 'as' => 'home']);
     Route::get('/welcome', function () {
@@ -39,14 +27,11 @@ Route::group(['middleware'=>'auth'], function() {
     Route::group(['prefix'=>'page'], function() {
         Route::match(['get'], '/team', ['uses' => 'PersonalController@getTeamPage', 'as' => 'page.team']);
         Route::match(['get'], '/event', ['uses' => 'PersonalController@getEventPage', 'as' => 'page.event']);
-        Route::match(['get'], '/query', ['uses' => 'PersonalController@getQueryPage', 'as' => 'page.query']);
     });
-
-    Route::match(['get', 'post'], '/admin', ['uses'=>'PersonalController@admin', 'as'=>'admin']);
 
     Route::group(['prefix'=>'todo'], function() {
         Route::post('/add', ['uses'=>'TodoController@add', 'as'=>'todo.add']);
-        Route::match(['get'], '/list/{where?}', ['uses' => 'TodoController@setList', 'as' => 'todo.set.list']);
+        Route::match(['get'], '/list', ['uses' => 'TodoController@setList', 'as' => 'todo.set.list']);
         Route::match(['get'], '/{id?}', ['uses' => 'TodoController@setFromId', 'as' => 'todo.set']);
         Route::match(['get', 'post'], '/edit/{id?}', ['uses' => 'TodoController@editFromId', 'as' => 'todo.edit']);
         Route::match(['get'], '/{id?}/status', ['uses' => 'TodoController@status', 'as' => 'todo.status']);

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Team;
-use App\Type;
 use App\User;
 use Auth;
 use App\Member;
@@ -65,73 +62,5 @@ class PersonalController extends Controller
 
     public function getEventPage(){
         return view('site.event');
-    }
-
-    public function getQueryPage(){
-        return view('site.querys');
-    }
-
-    public function admin(Request $request){
-        if($request->isMethod('post')){
-
-            switch ($request->type){
-                case 't':
-                    Type::create([
-                        'name'=>$request->typeName,
-                        'color'=>$request->typeColor
-                    ]);
-                    break;
-                case 'c':
-                    Category::create([
-                        'name'=>$request->categoryName,
-                        'color'=>$request->categoryColor
-                    ]);
-                    break;
-            }
-
-            return back();
-        }
-
-        $data = [
-            'types' => Type::all(),
-            'categories' => Category::all()
-        ];
-
-        return view('site.admin', $data);
-    }
-
-    public function teamUsersList($team){
-        $users = Member::getOnlyConfirmMembersList($team);
-        $html = '';
-        foreach($users as $user){
-            $html .= '<option value="'.$user->user_id.'">'.$user->name.'</option>';
-        }
-
-        echo $html;
-    }
-
-    public function querynine(Request $request){
-        if($request->isMethod('post')){
-            $input = $request->all();
-        }
-
-        $data = [
-            'users' => User::all(),
-            'teams' => Team::all()
-        ];
-
-        return view('site.query', $data);
-    }
-
-    public function teamTodoList($team, $user, $s){
-
-        if(!Todosteam::todoList($team)->where('memory_id', $user)->where('status', $s)->exists()) {
-            $data = [
-                'messeage' => 'Team 2Do list EMPTY <span class="emoji"></span>'
-            ];
-        }
-        $data['todos'] = Todosteam::todoList($team)->where('memory_id', $user)->where('status', $s)->get();
-
-        echo view('site.team.todo.list', $data);
     }
 }
