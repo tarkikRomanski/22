@@ -10,6 +10,13 @@ use Auth;
 
 class TodoController extends Controller
 {
+    private Todo $todo;
+
+    public function __construct(Todo $todo)
+    {
+        $this->todo = $todo;
+    }
+
     public function add(Request $request){
         if ($request->isMethod('post')){
 
@@ -29,51 +36,68 @@ class TodoController extends Controller
         }
     }
 
-    public function setList(){
+    public function getTodayList(){
         $date = Carbon::parse('today');
 
-        if(!Todo::todayList($date)->exists()) {
+        $todoQuery = $this->todo->getTodayList($date);
+
+        if(!$todoQuery->exists()) {
             $data = [
-                'messeage' => 'U 2Do list EMPTY, create first task!<span class="emoji"></span>'
+                'message' => 'U 2Do list EMPTY, create first task!<span class="emoji"></span>'
             ];
         }
-            $data['todos'] = Todo::todayList($date)->get();
 
-            echo view('site.todo.list', $data);
+        $data['todos'] = $todoQuery->get();
+
+        echo view('site.todo.list', $data);
     }
 
-    public function setFromId($id = null){
-        if($id != null){
-            if(Todo::where('id', $id)->exists()) {
-
-                $todo = Todo::find($id);
-
-                if($todo->owner_id == Auth::user()->id)
-                    echo view('site.todo.set', ['todo' => $todo]);
-                else
-                    echo '<h2>You dont have promise!</h2>';
-            } else {
-                echo '<h2>Data does not exist</h2>';
-            }
+    public function getById($id = null){
+        if ($id === null) {
+            return;
         }
+
+        if(!Todo::where('id', $id)->exists()) {
+            echo '<h2>Data does not exist</h2>';
+
+            return;
+        }
+
+        $todo = Todo::find($id);
+
+        echo $todo->owner_id == Auth::user()->id
+            ? view('site.todo.set', ['todo' => $todo])
+            : '<h2>You dont have promise!</h2>';
     }
 
-    public function status($id){
-        if($id != null){
-            $todo = Todo::where('id', $id)->first();
-            if($todo->owner_id == Auth::user()->id)
-                Todo::where('id', $id)->update([
-                    'status'=> $todo->status==0?1:0
-                ]);
+    public function toggleStatus($id){
+        if ($id === null) {
+            return;
         }
+
+        $todo = Todo::where('id', $id)->first();
+
+        if($todo && $todo->owner_id !== Auth::user()->id) {
+            return;
+        }
+
+        Todo::where('id', $id)->update([
+            'status'=> $todo->status === 0
+        ]);
     }
 
     public function delete($id){
-        if($id != null){
-            $todo = Todo::where('id', $id)->first();
-            if($todo->owner_id == Auth::user()->id)
-                Todo::where('id', $id)->delete();
+        if ($id === null) {
+            return;
         }
+
+        $todo = Todo::where('id', $id)->first();
+
+        if($todo->owner_id !== Auth::user()->id) {
+            return;
+        }
+
+        Todo::where('id', $id)->delete();
     }
 
     public function editFromId(Request $request, $id = null){

@@ -18,8 +18,8 @@ class StatisticController extends Controller
                 ?count(Todo::todayList(Carbon::today())->get()->toArray())
                 :false,
            'overTask' =>
-               Todo::overdayTasks(Carbon::today())->exists()
-               ?count(Todo::overdayTasks(Carbon::today())->get()->toArray())
+               Todo::overdueTasks(Carbon::today())->exists()
+               ?count(Todo::overdueTasks(Carbon::today())->get()->toArray())
                :false,
             'teamTask' =>
                 Todosteam::where('memory_id', Auth::user()->id)

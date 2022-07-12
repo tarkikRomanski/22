@@ -2,9 +2,12 @@
 
 namespace App;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 use Auth;
+
 class Todo extends Model
 {
     public $timestamps = false;
@@ -21,18 +24,20 @@ class Todo extends Model
         'date_day'
     ];
 
-    public function scopeGetUserTasc($query){
+    public function scopeAuthUser(Builder $query): Builder {
         return $query->where('owner_id', Auth::user()->id);
     }
 
-    public static function overdayTasksId($date, $id){
+    public static function overdueTasksId($date, $id){
         $notDoneLastYear = Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', '<', $date->year);
+
         $notDoneLastMonth = Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', $date->year)
             ->where('date_month', '<', $date->month);
+
         return Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', $date->year)
@@ -42,15 +47,17 @@ class Todo extends Model
             ->unionAll($notDoneLastMonth);
     }
 
-    public static function overdayTasks($date){
-        $notDoneLastYear = Todo::getUserTasc()
+    public static function overdueTasks($date){
+        $notDoneLastYear = Todo::authUser()
             ->where('status', false)
             ->where('date_year', '<', $date->year);
-        $notDoneLastMonth = Todo::getUserTasc()
+
+        $notDoneLastMonth = Todo::authUser()
             ->where('status', false)
             ->where('date_year', $date->year)
             ->where('date_month', '<', $date->month);
-        return Todo::getUserTasc()
+
+        return Todo::authUser()
             ->where('status', false)
             ->where('date_year', $date->year)
             ->where('date_month', $date->month)
@@ -60,14 +67,16 @@ class Todo extends Model
     }
 
     public static function todayListId($date, $id){
-        $notDoneLastYear = Todo::where('owner_id', $id)
+        $doesntDoneLastYear = Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', '<', $date->year);
-        $notDoneLastMonth = Todo::where('owner_id', $id)
+
+        $doesntDoneLastMonth = Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', $date->year)
             ->where('date_month', '<', $date->month);
-        $notDoneThisMonth = Todo::where('owner_id', $id)
+
+        $doesntDoneThisMonth = Todo::where('owner_id', $id)
             ->where('status', false)
             ->where('date_year', $date->year)
             ->where('date_month', $date->month)
@@ -77,32 +86,51 @@ class Todo extends Model
             ->where('date_year', $date->year)
             ->where('date_month', $date->month)
             ->where('date_day', $date->day)
-            ->unionAll($notDoneThisMonth)
-            ->unionAll($notDoneLastMonth)
-            ->unionAll($notDoneLastYear);
+            ->unionAll($doesntDoneThisMonth)
+            ->unionAll($doesntDoneLastMonth)
+            ->unionAll($doesntDoneLastYear);
     }
 
-    public static function todayList($date){
-        $notDoneLastYear = Todo::getUserTasc()
-            ->where('status', false)
-            ->where('date_year', '<', $date->year);
-        $notDoneLastMonth = Todo::getUserTasc()
-            ->where('status', false)
-            ->where('date_year', $date->year)
-            ->where('date_month', '<', $date->month);
-        $notDoneThisMonth = Todo::getUserTasc()
-            ->where('status', false)
-            ->where('date_year', $date->year)
-            ->where('date_month', $date->month)
-            ->where('date_day', '<', $date->day);
-
-        return Todo::getUserTasc()
+    public function getTodayList(Carbon $date): Builder {
+        return Todo::authUser()
             ->where('date_year', $date->year)
             ->where('date_month', $date->month)
             ->where('date_day', $date->day)
-            ->unionAll($notDoneThisMonth)
-            ->unionAll($notDoneLastMonth)
-            ->unionAll($notDoneLastYear);
+            ->unionAll(
+                $this->getDoesntCompleteTodosQueryByDayInMonth(
+                    Todo::authUser(),
+                    $date->year,
+                    $date->month,
+                    $date->day
+                )
+            )
+            ->unionAll($this->getDoesntCompleteTodosQueryByMonth(Todo::authUser(), $date->year, $date->month))
+            ->unionAll($this->getDoesntCompleteTodosQueryByYear(Todo::authUser(), $date->year));
     }
 
+    private function getDoesntCompleteTodosQueryByYear(Builder $preQuery, int $year): Builder {
+        return $preQuery
+            ->where('status', false)
+            ->where('date_year', '<', $year);
+    }
+
+    private function getDoesntCompleteTodosQueryByMonth(Builder $preQuery, int $year, int $month): Builder {
+        return $preQuery
+            ->where('status', false)
+            ->where('date_year', $year)
+            ->where('date_month', '<', $month);
+    }
+
+    private function getDoesntCompleteTodosQueryByDayInMonth(
+        Builder $preQuery,
+        int $year,
+        int $month,
+        int $day
+    ): Builder {
+        return $preQuery
+            ->where('status', false)
+            ->where('date_year', $year)
+            ->where('date_month', $month)
+            ->where('date_day', '<', $day);
+    }
 }

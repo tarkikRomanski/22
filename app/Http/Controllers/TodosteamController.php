@@ -36,7 +36,7 @@ class TodosteamController extends Controller
 
         if(!Todosteam::todoList($team)->exists()) {
             $data = [
-                'messeage' => 'Team 2Do list EMPTY, create first task!<span class="emoji"></span>'
+                'message' => 'Team 2Do list EMPTY, create first task!<span class="emoji"></span>'
             ];
         }
         $data['todos'] = Todosteam::todoList($team)->get();

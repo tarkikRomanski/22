@@ -24,8 +24,8 @@ class PersonalController extends Controller
                         ?count(Todo::todayListId(Carbon::today(), $user->id)->get()->toArray())
                         :false,
                 'overTask' =>
-                    Todo::overdayTasksId(Carbon::today(), $user->id)->exists()
-                        ?count(Todo::overdayTasksId(Carbon::today(), $user->id)->get()->toArray())
+                    Todo::overdueTasksId(Carbon::today(), $user->id)->exists()
+                        ?count(Todo::overdueTasksId(Carbon::today(), $user->id)->get()->toArray())
                         :false,
                 'teamTask' =>
                     Todosteam::where('memory_id', $user->id)

@@ -31,10 +31,10 @@ Route::group(['middleware'=>'auth'], function() {
 
     Route::group(['prefix'=>'todo'], function() {
         Route::post('/add', ['uses'=>'TodoController@add', 'as'=>'todo.add']);
-        Route::match(['get'], '/list', ['uses' => 'TodoController@setList', 'as' => 'todo.set.list']);
-        Route::match(['get'], '/{id?}', ['uses' => 'TodoController@setFromId', 'as' => 'todo.set']);
+        Route::match(['get'], '/list', ['uses' => 'TodoController@getTodayList', 'as' => 'todo.set.list']);
+        Route::match(['get'], '/{id?}', ['uses' => 'TodoController@getById', 'as' => 'todo.set']);
         Route::match(['get', 'post'], '/edit/{id?}', ['uses' => 'TodoController@editFromId', 'as' => 'todo.edit']);
-        Route::match(['get'], '/{id?}/status', ['uses' => 'TodoController@status', 'as' => 'todo.status']);
+        Route::match(['get'], '/{id?}/status', ['uses' => 'TodoController@toggleStatus', 'as' => 'todo.status']);
         Route::match(['get'], '/{id?}/delete', ['uses' => 'TodoController@delete', 'as' => 'todo.delete']);
     });
 
