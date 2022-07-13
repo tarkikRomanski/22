@@ -645,7 +645,7 @@ $(document).ready(function() {
                         });
 
                         $.ajax({
-                            url: '/event/list/complated',
+                            url: '/event/list/completed',
                             method: 'get',
                             success: function (list) {
 

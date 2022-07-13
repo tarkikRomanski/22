@@ -17,7 +17,7 @@
         "filp/whoops": "~2.0",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
-        "doctrine/dbal": "*"
+        "doctrine/dbal": "^2.0"
     },
     "autoload": {
         "classmap": [

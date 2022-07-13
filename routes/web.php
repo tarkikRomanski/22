@@ -15,13 +15,15 @@ Route::group(['middleware'=>'auth'], function() {
     });
 
     Route::group(['prefix'=>'event'], function() {
-        Route::match(['post', 'get'], '/add', ['uses'=>'EventController@add', 'as'=>'event.add']);
-        Route::match(['get'], '/list', ['uses'=>'EventController@userEvents', 'as'=>'event.list']);
-        Route::match(['get'], '/list/complated', ['uses'=>'EventController@userComplatedEvents', 'as'=>'event.complated.list']);
-        Route::match(['get'], '/{id?}/status', ['uses' => 'EventController@status', 'as' => 'event.status']);
-        Route::match(['get'], '/{id?}/delete', ['uses' => 'EventController@delete', 'as' => 'event.delete']);
-        Route::match(['get'], '/{id?}', ['uses' => 'EventController@eventById', 'as' => 'event']);
-        Route::match(['get', 'post'], '/edit/{id?}', ['uses' => 'EventController@editFromId', 'as' => 'event.edit']);
+        Route::match(['get'], '/add', ['uses'=>'EventController@getCreateView', 'as'=>'event.add.view']);
+        Route::match(['post'], '/add', ['uses'=>'EventController@create', 'as'=>'event.add']);
+        Route::match(['get'], '/list', ['uses'=>'EventController@getList', 'as'=>'event.list']);
+        Route::match(['get'], '/list/completed', ['uses'=>'EventController@getCompletedList', 'as'=>'event.completed.list']);
+        Route::match(['get'], '/{id}/status', ['uses' => 'EventController@toggleStatus', 'as' => 'event.status']);
+        Route::match(['get'], '/{id}/delete', ['uses' => 'EventController@delete', 'as' => 'event.delete']);
+        Route::match(['get'], '/{id}', ['uses' => 'EventController@getById', 'as' => 'event']);
+        Route::match(['get'], '/edit/{id}', ['uses' => 'EventController@getUpdateView', 'as' => 'event.edit.view']);
+        Route::match(['put'], '/edit', ['uses' => 'EventController@update', 'as' => 'event.edit']);
     });
 
     Route::group(['prefix'=>'page'], function() {

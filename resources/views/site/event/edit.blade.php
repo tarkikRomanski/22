@@ -4,7 +4,7 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-{{ Form::open(['route'=>'event.edit', 'method'=>'post', 'id'=>'eventAddForm', 'role'=>'form', 'enctype'=>'multipart/form-data']) }}
+{{ Form::open(['route'=>'event.edit', 'method'=>'put', 'id'=>'eventAddForm', 'role'=>'form', 'enctype'=>'multipart/form-data']) }}
 {{ Form::hidden('event', $event->id) }}
 <div class="modal-body">
     <div class="form-group">
@@ -230,6 +230,6 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button class="btn btn-main">Add new Event</button>
+    <button class="btn btn-main">Update Event</button>
 </div>
 {{ Form::close() }}
